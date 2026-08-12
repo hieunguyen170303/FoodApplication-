@@ -7,14 +7,14 @@ export const CustomTabBar: React.FC<any> = ({
   descriptors,
   navigation,
 }) => {
-  const getTabConfig = (routeName: string) => {
+  const getTabConfig = (routeName: string): { label: string; icon: any; badge?: number } => {
     switch (routeName) {
       case "index":
         return { label: "Home", icon: ICONS.home };
       case "search":
         return { label: "Search", icon: ICONS.search };
-      case "cart":
-        return { label: "Cart", icon: ICONS.bag, badge: 2 };
+      case "orders":
+        return { label: "Orders", icon: ICONS.clock };
       case "profile":
         return { label: "Profile", icon: ICONS.user };
       default:

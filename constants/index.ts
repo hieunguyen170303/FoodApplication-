@@ -64,4 +64,4 @@ export const CATEGORIES = [
   },
 ];
 
-export const USER_LOCATION = "Rijeka, Croatia";
+export const USER_LOCATION = "Binh Duong, Ho Chi Minh";

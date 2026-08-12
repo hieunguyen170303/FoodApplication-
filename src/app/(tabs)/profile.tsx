@@ -1,7 +1,6 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { ICONS, IMAGES } from "@/constants";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProfileScreen() {
   return (
@@ -15,15 +14,15 @@ export default function ProfileScreen() {
         <View className="flex-row items-center bg-primary/10 p-5 rounded-3xl mb-6 border border-primary/20">
           <Image source={IMAGES.avatar} className="w-16 h-16 rounded-full mr-4" resizeMode="cover" />
           <View className="flex-1">
-            <Text className="text-lg font-bold text-dark-100 font-quicksand-bold">John Doe</Text>
-            <Text className="text-sm text-gray-500 font-quicksand">john.doe@example.com</Text>
+            <Text className="text-lg font-bold text-dark-100 font-quicksand-bold">Hieu Vip Pro</Text>
+            <Text className="text-sm text-gray-500 font-quicksand">hieuvippro123@gmail.com</Text>
             <Text className="text-xs text-primary font-bold font-quicksand-bold mt-1">VIP Member</Text>
           </View>
         </View>
 
         {/* Menu Items */}
         {[
-          { icon: ICONS.location, title: "Delivery Addresses", subtitle: "Rijeka, Croatia" },
+          { icon: ICONS.location, title: "Delivery Addresses", subtitle: "Binh Duong, Ho Chi Minh" },
           { icon: ICONS.clock, title: "Order History", subtitle: "12 completed orders" },
           { icon: ICONS.star, title: "Favorites & Offers", subtitle: "3 active vouchers" },
           { icon: ICONS.pencil, title: "Edit Profile", subtitle: "Change password & info" },

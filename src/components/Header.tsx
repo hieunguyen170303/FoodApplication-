@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+import { Badge, TouchableRipple } from "react-native-paper";
 import { ICONS, USER_LOCATION } from "@/constants";
 
 interface HeaderProps {
@@ -32,33 +33,38 @@ export const Header: React.FC<HeaderProps> = ({
           </Text>
           <Image
             source={ICONS.arrowDown}
-            className="w-3.5 h-3.5 tint-dark-100"
+            className="w-3.5 h-3.5"
             style={{ tintColor: "#181C2E" }}
             resizeMode="contain"
           />
         </View>
       </TouchableOpacity>
 
-      {/* Cart Button with Badge */}
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={onCartPress}
-        className="relative w-11 h-11 bg-dark-100 rounded-full items-center justify-center shadow-sm"
-      >
-        <Image
-          source={ICONS.bag}
-          className="w-5 h-5"
-          style={{ tintColor: "#FFFFFF" }}
-          resizeMode="contain"
-        />
+      {/* Cart Button with Paper Badge */}
+      <View className="relative">
+        <TouchableRipple
+          borderless
+          onPress={onCartPress}
+          className="w-11 h-11 bg-dark-100 rounded-full items-center justify-center shadow-sm overflow-hidden"
+        >
+          <Image
+            source={ICONS.bag}
+            className="w-5 h-5"
+            style={{ tintColor: "#FFFFFF" }}
+            resizeMode="contain"
+          />
+        </TouchableRipple>
+
         {cartCount > 0 && (
-          <View className="absolute -top-1 -right-1 w-5 h-5 bg-primary rounded-full items-center justify-center border-2 border-white">
-            <Text className="text-[10px] font-bold text-white font-quicksand-bold">
-              {cartCount}
-            </Text>
-          </View>
+          <Badge
+            size={20}
+            className="absolute -top-1 -right-1 bg-primary text-white font-bold border-2 border-white"
+            style={{ backgroundColor: "#FE8C00" }}
+          >
+            {cartCount}
+          </Badge>
         )}
-      </TouchableOpacity>
+      </View>
     </View>
   );
 };

@@ -1,9 +1,23 @@
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from 'react';
+import { MD3LightTheme, PaperProvider } from 'react-native-paper';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import './globals.css';
 
 SplashScreen.preventAutoHideAsync();
+
+const theme = {
+  ...MD3LightTheme,
+  colors: {
+    ...MD3LightTheme.colors,
+    primary: '#FE8C00',
+    secondary: '#181C2E',
+    background: '#FFFFFF',
+    surface: '#FFFFFF',
+    error: '#F14141',
+  },
+};
 
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -25,5 +39,14 @@ export default function RootLayout() {
     return null;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <PaperProvider
+      theme={theme}
+      settings={{
+        icon: (props) => <MaterialCommunityIcons {...props} />,
+      }}
+    >
+      <Stack screenOptions={{ headerShown: false }} />
+    </PaperProvider>
+  );
 }
