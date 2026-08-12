@@ -1,8 +1,18 @@
 import { ICONS, IMAGES } from "@/constants";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, Text, TouchableOpacity, View, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function ProfileScreen() {
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    Alert.alert("Log Out", "Are you sure you want to log out?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Log Out", style: "destructive", onPress: () => logout() },
+    ]);
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-white px-5 pt-3" edges={["top", "left", "right"]}>
       <Text className="text-2xl font-bold text-dark-100 font-quicksand-bold mb-4">
@@ -12,10 +22,10 @@ export default function ProfileScreen() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 110 }}>
         {/* Profile Card */}
         <View className="flex-row items-center bg-primary/10 p-5 rounded-3xl mb-6 border border-primary/20">
-          <Image source={IMAGES.avatar} className="w-16 h-16 rounded-full mr-4" resizeMode="cover" />
+          <Image source={user?.avatar || IMAGES.avatar} className="w-16 h-16 rounded-full mr-4" resizeMode="cover" />
           <View className="flex-1">
-            <Text className="text-lg font-bold text-dark-100 font-quicksand-bold">Hieu Vip Pro</Text>
-            <Text className="text-sm text-gray-500 font-quicksand">hieuvippro123@gmail.com</Text>
+            <Text className="text-lg font-bold text-dark-100 font-quicksand-bold">{user?.name || "Adrian Hajdin"}</Text>
+            <Text className="text-sm text-gray-500 font-quicksand">{user?.email || "adrian@gmail.com"}</Text>
             <Text className="text-xs text-primary font-bold font-quicksand-bold mt-1">VIP Member</Text>
           </View>
         </View>
@@ -39,7 +49,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         ))}
 
-        <TouchableOpacity className="flex-row items-center justify-center bg-red-50 py-4 rounded-2xl border border-red-100 mt-4">
+        <TouchableOpacity onPress={handleLogout} className="flex-row items-center justify-center bg-red-50 py-4 rounded-2xl border border-red-100 mt-4">
           <Image source={ICONS.logout} className="w-5 h-5 mr-2" style={{ tintColor: "#F14141" }} resizeMode="contain" />
           <Text className="text-red-500 font-bold font-quicksand-bold text-base">Log Out</Text>
         </TouchableOpacity>

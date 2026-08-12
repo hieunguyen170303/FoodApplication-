@@ -336,7 +336,7 @@ export default function RestaurantDetailScreen() {
         totalCount={totalCartCount}
         totalPrice={totalCartPrice}
         onPressCart={() => {
-          Alert.alert("Cart", `Proceeding to checkout with ${totalCartCount} items!`);
+          router.push("/checkout" as any);
         }}
       />
     </SafeAreaView>

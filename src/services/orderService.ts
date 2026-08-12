@@ -82,8 +82,46 @@ export const MOCK_ORDER_HISTORY: Order[] = [
   },
 ];
 
+let currentLiveOrder: Order | null = MOCK_ACTIVE_ORDER;
+
+export const createLiveOrder = (
+  storeName: string,
+  storeLogo: any,
+  items: { name: string; quantity: number; price: number }[],
+  estimatedTime: string,
+  totalPrice: number
+): Order => {
+  const newOrder: Order = {
+    id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
+    storeName: storeName || "KFC - Tòa Nhà Sora Gardens SC",
+    storeLogo: storeLogo || IMAGES.burgerTwo,
+    status: "DELIVERING",
+    statusText: "Tài xế đang giao hàng đến bạn",
+    estimatedTime: estimatedTime || "19 phút",
+    currentStepIndex: 2,
+    orderDate: "Hôm nay, vừa xong",
+    items: items.map((it, idx) => ({
+      id: `live_i_${idx}`,
+      name: it.name,
+      quantity: it.quantity,
+      price: it.price,
+    })),
+    totalPrice: totalPrice,
+    driverInfo: {
+      name: "Nguyễn Văn Hùng",
+      phone: "0901234567",
+      rating: 4.9,
+      vehicleNumber: "61B1 - 888.99",
+      avatar: IMAGES.avatar,
+    },
+  };
+
+  currentLiveOrder = newOrder;
+  return newOrder;
+};
+
 export const getActiveOrder = async (): Promise<Order | null> => {
-  return MOCK_ACTIVE_ORDER;
+  return currentLiveOrder;
 };
 
 export const getOrderHistory = async (): Promise<Order[]> => {

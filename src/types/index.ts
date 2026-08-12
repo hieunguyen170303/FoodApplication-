@@ -144,3 +144,29 @@ export interface Order {
   };
 }
 
+export interface DeliveryOption {
+  id: string;
+  name: string;
+  speedText: string;
+  timeText: string;
+  price: number;
+  originalPrice?: number;
+  isFree?: boolean;
+  tag?: string;
+  isDefault?: boolean;
+}
+
+export interface PaymentMethod {
+  id: string;
+  name: string;
+  color: string;
+  isDefault?: boolean;
+}
+
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: any;
+}
+

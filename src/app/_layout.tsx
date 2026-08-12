@@ -1,9 +1,10 @@
-import { useFonts } from 'expo-font';
-import { SplashScreen, Stack } from "expo-router";
-import { useEffect } from 'react';
-import { MD3LightTheme, PaperProvider } from 'react-native-paper';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import './globals.css';
+import { useFonts } from "expo-font";
+import { SplashScreen, Stack, useRouter, useSegments } from "expo-router";
+import { useEffect } from "react";
+import { MD3LightTheme, PaperProvider } from "react-native-paper";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
+import "./globals.css";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -11,13 +12,33 @@ const theme = {
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
-    primary: '#FE8C00',
-    secondary: '#181C2E',
-    background: '#FFFFFF',
-    surface: '#FFFFFF',
-    error: '#F14141',
+    primary: "#FE8C00",
+    secondary: "#181C2E",
+    background: "#FFFFFF",
+    surface: "#FFFFFF",
+    error: "#F14141",
   },
 };
+
+function RootNavigation() {
+  const { isAuthenticated } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    const inAuthGroup = segments[0] === "auth";
+
+    if (!isAuthenticated && !inAuthGroup) {
+      // Redirect unauthenticated user to /auth screen
+      router.replace("/auth" as any);
+    } else if (isAuthenticated && inAuthGroup) {
+      // Redirect authenticated user to home page
+      router.replace("/(tabs)" as any);
+    }
+  }, [isAuthenticated, segments]);
+
+  return <Stack screenOptions={{ headerShown: false }} />;
+}
 
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -40,13 +61,15 @@ export default function RootLayout() {
   }
 
   return (
-    <PaperProvider
-      theme={theme}
-      settings={{
-        icon: (props) => <MaterialCommunityIcons {...props} />,
-      }}
-    >
-      <Stack screenOptions={{ headerShown: false }} />
-    </PaperProvider>
+    <AuthProvider>
+      <PaperProvider
+        theme={theme}
+        settings={{
+          icon: (props) => <MaterialCommunityIcons {...props} />,
+        }}
+      >
+        <RootNavigation />
+      </PaperProvider>
+    </AuthProvider>
   );
 }
