@@ -1,9 +1,9 @@
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack, useRouter, useSegments } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { AuthProvider, useAuth } from "@/context/AuthContext";
+import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
 SplashScreen.preventAutoHideAsync();
@@ -19,26 +19,6 @@ const theme = {
     error: "#F14141",
   },
 };
-
-function RootNavigation() {
-  const { isAuthenticated } = useAuth();
-  const segments = useSegments();
-  const router = useRouter();
-
-  useEffect(() => {
-    const inAuthGroup = segments[0] === "auth";
-
-    if (!isAuthenticated && !inAuthGroup) {
-      // Redirect unauthenticated user to /auth screen
-      router.replace("/auth" as any);
-    } else if (isAuthenticated && inAuthGroup) {
-      // Redirect authenticated user to home page
-      router.replace("/(tabs)" as any);
-    }
-  }, [isAuthenticated, segments]);
-
-  return <Stack screenOptions={{ headerShown: false }} />;
-}
 
 export default function RootLayout() {
   const [fontsLoaded, error] = useFonts({
@@ -68,7 +48,14 @@ export default function RootLayout() {
           icon: (props) => <MaterialCommunityIcons {...props} />,
         }}
       >
-        <RootNavigation />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="auth" />
+          <Stack.Screen name="verify-otp" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="restaurant/[id]" />
+          <Stack.Screen name="checkout" />
+        </Stack>
       </PaperProvider>
     </AuthProvider>
   );

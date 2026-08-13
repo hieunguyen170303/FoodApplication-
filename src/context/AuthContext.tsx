@@ -1,12 +1,13 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import { AuthUser } from "@/types";
-import { mockLogin, mockRegister } from "@/services/authService";
+import { apiLogin, apiRegister, apiVerifyOtp } from "@/services/authService";
 
 interface AuthContextType {
   user: AuthUser | null;
   isAuthenticated: boolean;
   login: (email: string, pass: string) => Promise<AuthUser>;
-  register: (name: string, email: string, pass: string) => Promise<AuthUser>;
+  register: (name: string, email: string, pass: string) => Promise<any>;
+  verifyOtp: (email: string, token: string) => Promise<AuthUser>;
   logout: () => void;
 }
 
@@ -16,15 +17,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<AuthUser | null>(null);
 
   const login = async (email: string, pass: string) => {
-    const loggedUser = await mockLogin(email, pass);
+    const loggedUser = await apiLogin(email, pass);
     setUser(loggedUser);
     return loggedUser;
   };
 
   const register = async (name: string, email: string, pass: string) => {
-    const registeredUser = await mockRegister(name, email, pass);
-    setUser(registeredUser);
-    return registeredUser;
+    const res = await apiRegister(name, email, pass);
+    return res;
+  };
+
+  const verifyOtp = async (email: string, token: string) => {
+    const verifiedUser = await apiVerifyOtp(email, token);
+    setUser(verifiedUser);
+    return verifiedUser;
   };
 
   const logout = () => {
@@ -38,6 +44,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         isAuthenticated: !!user,
         login,
         register,
+        verifyOtp,
         logout,
       }}
     >

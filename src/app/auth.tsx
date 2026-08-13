@@ -29,11 +29,13 @@ export default function AuthScreen() {
     try {
       if (activeTab === "login") {
         await login(email, password);
+        setSuccessModalVisible(true);
       } else {
-        await register(fullName, email, password);
+        const res = await register(fullName, email, password);
+        // Redirect to OTP Verification screen
+        router.push(`/verify-otp?email=${encodeURIComponent(email)}` as any);
       }
-      setSuccessModalVisible(true);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Auth error:", err);
     } finally {
       setLoading(false);
@@ -74,9 +76,15 @@ export default function AuthScreen() {
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => setActiveTab("login")}
-              className={`flex-1 py-3 rounded-xl items-center justify-center ${
-                activeTab === "login" ? "bg-white shadow-sm" : ""
-              }`}
+              style={{
+                flex: 1,
+                paddingVertical: 12,
+                borderRadius: 12,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: activeTab === "login" ? "#FFFFFF" : "transparent",
+                elevation: activeTab === "login" ? 2 : 0,
+              }}
             >
               <Text
                 className={`text-sm font-bold font-quicksand-bold ${
@@ -90,9 +98,15 @@ export default function AuthScreen() {
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => setActiveTab("signup")}
-              className={`flex-1 py-3 rounded-xl items-center justify-center ${
-                activeTab === "signup" ? "bg-white shadow-sm" : ""
-              }`}
+              style={{
+                flex: 1,
+                paddingVertical: 12,
+                borderRadius: 12,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: activeTab === "signup" ? "#FFFFFF" : "transparent",
+                elevation: activeTab === "signup" ? 2 : 0,
+              }}
             >
               <Text
                 className={`text-sm font-bold font-quicksand-bold ${
