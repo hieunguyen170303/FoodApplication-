@@ -1,12 +1,12 @@
-import { Text, View } from "react-native";
-import "./globals.css";
+import { Redirect } from "expo-router";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Index() {
-  return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-xl font-bold text-blue-500">
-        Welcome to Nmy ReactNative Alppication!
-      </Text>
-    </View>
-  );
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Redirect href={"/auth" as any} />;
+  }
+
+  return <Redirect href={"/(tabs)" as any} />;
 }
