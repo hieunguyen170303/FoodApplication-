@@ -50,6 +50,26 @@ export default function ShipperProfileScreen() {
           </View>
         </View>
 
+        {/* Shipper Wallet Banner Button */}
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => router.push("/shipper/wallet" as any)}
+          className="bg-emerald-600 p-4 rounded-3xl mb-5 shadow-md shadow-emerald-500/20 flex-row justify-between items-center"
+        >
+          <View className="flex-row items-center">
+            <Text className="text-2xl mr-3">💰</Text>
+            <View>
+              <Text className="text-xs text-emerald-100 font-bold font-quicksand-bold uppercase">
+                SỐ DƯ VÍ TÀI XẾ
+              </Text>
+              <Text className="text-lg font-extrabold text-white font-quicksand-bold">
+                350.000đ (Rút về Ngân hàng ➔)
+              </Text>
+            </View>
+          </View>
+          <Text className="text-white font-bold text-lg">›</Text>
+        </TouchableOpacity>
+
         {/* Vehicle & Info Section */}
         <View className="bg-white rounded-2xl p-4 mb-5 border border-gray-100 space-y-3">
           <Text className="text-xs font-bold text-gray-400 uppercase font-quicksand mb-1">

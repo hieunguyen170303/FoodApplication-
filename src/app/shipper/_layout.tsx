@@ -7,6 +7,10 @@ function ShipperTabBar({ state, descriptors, navigation }: any) {
     <View className="flex-row bg-white border-t border-gray-200 py-2.5 px-4 justify-around items-center">
       {state.routes.map((route: any, index: number) => {
         const { options } = descriptors[route.key];
+
+        // Hide screens with href: null from bottom tab bar
+        if (options.href === null) return null;
+
         const isFocused = state.index === index;
 
         const onPress = () => {
@@ -80,6 +84,20 @@ export default function ShipperLayout() {
         name="profile"
         options={{
           title: "Tài khoản",
+        }}
+      />
+      <Tabs.Screen
+        name="wallet"
+        options={{
+          href: null,
+          tabBarStyle: { display: "none" },
+        }}
+      />
+      <Tabs.Screen
+        name="chat/[orderId]"
+        options={{
+          href: null,
+          tabBarStyle: { display: "none" },
         }}
       />
     </Tabs>
