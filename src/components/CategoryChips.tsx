@@ -1,6 +1,5 @@
 import React from "react";
-import { ScrollView } from "react-native";
-import { Chip } from "react-native-paper";
+import { ScrollView, TouchableOpacity, Text, View } from "react-native";
 
 interface CategoryChipsProps {
   categories: string[];
@@ -13,6 +12,18 @@ export const CategoryChips: React.FC<CategoryChipsProps> = ({
   selectedCategory,
   onSelectCategory,
 }) => {
+  const getEmoji = (cat: string) => {
+    const lower = cat.toLowerCase();
+    if (lower.includes("all") || lower.includes("tất cả")) return "✨";
+    if (lower.includes("burger")) return "🍔";
+    if (lower.includes("pizza")) return "🍕";
+    if (lower.includes("chicken") || lower.includes("gà")) return "🍗";
+    if (lower.includes("drink") || lower.includes("trà")) return "🥤";
+    if (lower.includes("rice") || lower.includes("cơm")) return "🍱";
+    if (lower.includes("noodle") || lower.includes("phở")) return "🍜";
+    return "😋";
+  };
+
   return (
     <ScrollView
       horizontal
@@ -22,27 +33,27 @@ export const CategoryChips: React.FC<CategoryChipsProps> = ({
     >
       {categories.map((cat) => {
         const isSelected = selectedCategory === cat;
+        const emoji = getEmoji(cat);
         return (
-          <Chip
+          <TouchableOpacity
             key={cat}
-            selected={isSelected}
+            activeOpacity={0.8}
             onPress={() => onSelectCategory(cat)}
-            mode={isSelected ? "flat" : "outlined"}
-            className="mr-2"
-            style={{
-              backgroundColor: isSelected ? "#FE8C00" : "#F3F4F6",
-              borderRadius: 24,
-              borderColor: isSelected ? "#FE8C00" : "#E5E7EB",
-            }}
-            textStyle={{
-              color: isSelected ? "#FFFFFF" : "#6B7280",
-              fontWeight: "700",
-              fontFamily: "Quicksand-Bold",
-              fontSize: 13,
-            }}
+            className={`flex-row items-center px-4 py-2.5 rounded-full mr-2.5 border transition-all ${
+              isSelected
+                ? "bg-primary border-primary shadow-md shadow-orange-500/30"
+                : "bg-white border-gray-200/80 shadow-xs"
+            }`}
           >
-            {cat}
-          </Chip>
+            <Text className="text-sm mr-1.5">{emoji}</Text>
+            <Text
+              className={`text-xs font-extrabold font-quicksand-bold ${
+                isSelected ? "text-white" : "text-gray-700"
+              }`}
+            >
+              {cat}
+            </Text>
+          </TouchableOpacity>
         );
       })}
     </ScrollView>

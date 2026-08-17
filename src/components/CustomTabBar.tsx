@@ -7,37 +7,37 @@ export const CustomTabBar: React.FC<any> = ({
   descriptors,
   navigation,
 }) => {
-  const getTabConfig = (routeName: string): { label: string; icon: any; badge?: number } => {
+  const getTabConfig = (routeName: string): { label: string; icon: any } => {
     switch (routeName) {
       case "index":
-        return { label: "Home", icon: ICONS.home };
+        return { label: "Trang chủ", icon: ICONS.home };
       case "search":
-        return { label: "Search", icon: ICONS.search };
+        return { label: "Tìm kiếm", icon: ICONS.search };
       case "orders":
-        return { label: "Orders", icon: ICONS.clock };
+        return { label: "Đơn hàng", icon: ICONS.clock };
       case "profile":
-        return { label: "Profile", icon: ICONS.user };
+        return { label: "Cá nhân", icon: ICONS.user };
       default:
         return { label: routeName, icon: ICONS.home };
     }
   };
 
   return (
-    <View className="absolute bottom-5 left-5 right-5 z-50">
+    <View className="absolute bottom-6 left-5 right-5 z-50">
       <View
-        className="flex-row items-center justify-around bg-white rounded-full py-2.5 px-3 shadow-lg border border-gray-100"
+        className="flex-row items-center justify-around bg-white/95 rounded-[32px] py-2 px-3 shadow-2xl border border-orange-500/10"
         style={{
-          elevation: 12,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 6 },
-          shadowOpacity: 0.12,
-          shadowRadius: 10,
+          elevation: 16,
+          shadowColor: "#FE8C00",
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.2,
+          shadowRadius: 16,
         }}
       >
         {state.routes.map((route: any, index: number) => {
           const { options } = descriptors[route.key];
           const isFocused = state.index === index;
-          const { label, icon, badge } = getTabConfig(route.name);
+          const { label, icon } = getTabConfig(route.name);
 
           const onPress = () => {
             const event = navigation.emit({
@@ -51,10 +51,6 @@ export const CustomTabBar: React.FC<any> = ({
             }
           };
 
-          const activeColor = "#FE8C00";
-          const inactiveColor = "#878787";
-          const color = isFocused ? activeColor : inactiveColor;
-
           return (
             <TouchableOpacity
               key={route.key}
@@ -63,31 +59,23 @@ export const CustomTabBar: React.FC<any> = ({
               accessibilityLabel={options.tabBarAccessibilityLabel}
               testID={options.tabBarTestID}
               onPress={onPress}
-              activeOpacity={0.7}
-              className="items-center justify-center flex-1 py-1"
+              activeOpacity={0.8}
+              className={`flex-row items-center justify-center py-2 px-3.5 rounded-full transition-all ${
+                isFocused ? "bg-orange-50 border border-orange-200" : "bg-transparent"
+              }`}
             >
-              <View className="relative mb-1">
-                <Image
-                  source={icon}
-                  className="w-6 h-6"
-                  style={{ tintColor: color }}
-                  resizeMode="contain"
-                />
-                {badge && badge > 0 ? (
-                  <View className="absolute -top-1.5 -right-2 bg-primary rounded-full w-4 h-4 items-center justify-center border border-white">
-                    <Text className="text-[9px] font-bold text-white font-quicksand-bold">
-                      {badge}
-                    </Text>
-                  </View>
-                ) : null}
-              </View>
+              <Image
+                source={icon}
+                className="w-5 h-5"
+                style={{ tintColor: isFocused ? "#FE8C00" : "#9CA3AF" }}
+                resizeMode="contain"
+              />
 
-              <Text
-                className="text-[11px] font-medium font-quicksand"
-                style={{ color }}
-              >
-                {label}
-              </Text>
+              {isFocused && (
+                <Text className="text-xs font-extrabold text-primary font-quicksand-bold ml-1.5">
+                  {label}
+                </Text>
+              )}
             </TouchableOpacity>
           );
         })}

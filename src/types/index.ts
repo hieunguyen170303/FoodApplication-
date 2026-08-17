@@ -46,6 +46,7 @@ export interface GridFoodItem {
 export interface Restaurant {
   id: string;
   name: string;
+  branch?: string;
   logo: any;
   rating: number;
   reviewCount: string;
