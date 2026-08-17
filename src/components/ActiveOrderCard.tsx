@@ -1,8 +1,8 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
+import { useRouter } from "expo-router";
+import { View, Text, Image, TouchableOpacity, Alert, Linking } from "react-native";
 import { Card, Button, Chip } from "react-native-paper";
 import { Order } from "@/types";
-import { ICONS } from "@/constants";
 
 interface ActiveOrderCardProps {
   order: Order;
@@ -13,7 +13,10 @@ export const ActiveOrderCard: React.FC<ActiveOrderCardProps> = ({
   order,
   onPressTrack,
 }) => {
+  const router = useRouter();
   const formatVND = (num: number) => `${num.toLocaleString("vi-VN")}đ`;
+
+  const isCompleted = order.currentStepIndex === 3 || order.status === "COMPLETED";
 
   const steps = [
     { label: "Đã nhận đơn", done: (order.currentStepIndex ?? 0) >= 0 },
@@ -21,6 +24,12 @@ export const ActiveOrderCard: React.FC<ActiveOrderCardProps> = ({
     { label: "Đang giao", done: (order.currentStepIndex ?? 0) >= 2 },
     { label: "Đã đến nơi", done: (order.currentStepIndex ?? 0) >= 3 },
   ];
+
+  const handleCallDriver = () => {
+    Linking.openURL(`tel:${order.driverInfo?.phone || "0901234567"}`).catch(() => {
+      Alert.alert("Gọi tài xế", `Số điện thoại: ${order.driverInfo?.phone || "0901234567"}`);
+    });
+  };
 
   return (
     <Card
@@ -47,10 +56,15 @@ export const ActiveOrderCard: React.FC<ActiveOrderCardProps> = ({
         </View>
         <Chip
           compact
-          style={{ backgroundColor: "#FFF7ED", borderRadius: 12 }}
-          textStyle={{ color: "#FE8C00", fontSize: 11, fontFamily: "Quicksand-Bold", fontWeight: "700" }}
+          style={{ backgroundColor: isCompleted ? "#ECFDF5" : "#FFF7ED", borderRadius: 12 }}
+          textStyle={{
+            color: isCompleted ? "#047857" : "#FE8C00",
+            fontSize: 11,
+            fontFamily: "Quicksand-Bold",
+            fontWeight: "700",
+          }}
         >
-          {order.estimatedTime}
+          {isCompleted ? "✅ Đã giao thành công" : order.estimatedTime}
         </Chip>
       </View>
 
@@ -112,14 +126,14 @@ export const ActiveOrderCard: React.FC<ActiveOrderCardProps> = ({
 
             <View className="flex-row items-center gap-2">
               <TouchableOpacity
-                onPress={() => Alert.alert("Call Driver", `Calling ${order.driverInfo?.phone}...`)}
+                onPress={handleCallDriver}
                 className="w-9 h-9 rounded-full bg-emerald-500 items-center justify-center"
               >
                 <Text className="text-white text-sm font-bold">📞</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => Alert.alert("Chat Driver", "Opening chat window...")}
-                className="w-9 h-9 rounded-full bg-primary items-center justify-center"
+                onPress={() => router.push(`/chat/${order.id}` as any)}
+                className="w-9 h-9 rounded-full bg-primary items-center justify-center shadow-sm"
               >
                 <Text className="text-white text-sm font-bold">💬</Text>
               </TouchableOpacity>
@@ -147,17 +161,31 @@ export const ActiveOrderCard: React.FC<ActiveOrderCardProps> = ({
           </View>
         </View>
 
-        {/* Action Button */}
-        <Button
-          mode="contained"
-          onPress={onPressTrack || (() => Alert.alert("Tracking", "Opening map position..."))}
-          buttonColor="#FE8C00"
-          textColor="#FFFFFF"
-          labelStyle={{ fontFamily: "Quicksand-Bold", fontWeight: "700" }}
-          className="mt-4 rounded-full py-0.5"
-        >
-          📍 Xem vị trí tài xế thời gian thực
-        </Button>
+        {/* Action Button: Review Button when Completed */}
+        {isCompleted ? (
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() =>
+              router.push(`/review/${order.id}?storeName=${encodeURIComponent(order.storeName)}` as any)
+            }
+            className="mt-4 bg-primary py-3 rounded-full items-center justify-center shadow-md shadow-orange-500/20 flex-row space-x-1"
+          >
+            <Text className="text-white font-extrabold text-sm font-quicksand-bold">
+              ⭐ Đánh giá cửa hàng & tài xế
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <Button
+            mode="contained"
+            onPress={onPressTrack || (() => Alert.alert("Tracking", "Opening map position..."))}
+            buttonColor="#FE8C00"
+            textColor="#FFFFFF"
+            labelStyle={{ fontFamily: "Quicksand-Bold", fontWeight: "700" }}
+            className="mt-4 rounded-full py-0.5"
+          >
+            📍 Xem vị trí tài xế thời gian thực
+          </Button>
+        )}
       </Card.Content>
     </Card>
   );

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getRestaurantDetail } from "@/services/restaurantService";
+import { useCart } from "@/context/CartContext";
 import {
   RestaurantDetail,
   RestaurantMenuItem,
@@ -11,15 +12,14 @@ export function useRestaurantDetail(restaurantId: string = "r2") {
   const [restaurant, setRestaurant] = useState<RestaurantDetail | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const { addToCart, cartItems, cartSubtotal, cartCount } = useCart();
+
   // Customization Modal States
   const [customizingItem, setCustomizingItem] = useState<RestaurantMenuItem | null>(null);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedOptions, setSelectedOptions] = useState<{ [groupId: string]: FoodOption }>({});
   const [quantity, setQuantity] = useState<number>(1);
   const [note, setNote] = useState<string>("");
-
-  // Cart State
-  const [cartItems, setCartItems] = useState<CustomizedCartItem[]>([]);
 
   useEffect(() => {
     async function loadDetail() {
@@ -78,9 +78,9 @@ export function useRestaurantDetail(restaurantId: string = "r2") {
     return basePrice * quantity;
   };
 
-  // Confirm customization & add item to cart
+  // Confirm customization & add item to cart via CartContext
   const confirmAddToCart = () => {
-    if (!customizingItem) return;
+    if (!customizingItem || !restaurant) return;
 
     const newItemTotal = calculateItemTotal();
     const newCartItem: CustomizedCartItem = {
@@ -92,13 +92,17 @@ export function useRestaurantDetail(restaurantId: string = "r2") {
       itemTotal: newItemTotal,
     };
 
-    setCartItems((prev) => [...prev, newCartItem]);
+    addToCart(
+      {
+        id: restaurant.id,
+        name: restaurant.name,
+        branch: restaurant.branch,
+        logo: restaurant.logo,
+      },
+      newCartItem
+    );
     closeCustomizationModal();
   };
-
-  // Total cart price calculation
-  const totalCartPrice = cartItems.reduce((acc, item) => acc + item.itemTotal, 0);
-  const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return {
     restaurant,
@@ -111,8 +115,8 @@ export function useRestaurantDetail(restaurantId: string = "r2") {
     note,
     setNote,
     cartItems,
-    totalCartPrice,
-    totalCartCount,
+    totalCartPrice: cartSubtotal,
+    totalCartCount: cartCount,
     openCustomizationModal,
     closeCustomizationModal,
     selectOption,

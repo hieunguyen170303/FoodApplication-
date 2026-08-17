@@ -11,13 +11,8 @@ export const apiRegister = async (
     const res = await apiClient.post("/auth/register", { fullName, email, password });
     return res;
   } catch (err: any) {
-    console.warn("Server API Register fallback to mock:", err.message);
-    return {
-      success: true,
-      message: "Mã OTP 6 chữ số đã được gửi đến Email của bạn!",
-      email,
-      needOtpVerification: true,
-    };
+    console.error("Server API Register Error:", err.message);
+    throw new Error(err.message || "Không thể kết nối đến Backend Server!");
   }
 };
 
@@ -36,7 +31,8 @@ export const apiVerifyOtp = async (
       };
     }
   } catch (err: any) {
-    console.warn("Server API Verify OTP fallback to mock:", err.message);
+    console.error("Server API Verify OTP Error:", err.message);
+    throw new Error(err.message || "Mã OTP không hợp lệ!");
   }
 
   return {
@@ -62,7 +58,8 @@ export const apiLogin = async (
       };
     }
   } catch (err: any) {
-    console.warn("Server API Login fallback to mock:", err.message);
+    console.error("Server API Login Error:", err.message);
+    throw new Error(err.message || "Đăng nhập thất bại!");
   }
 
   return {

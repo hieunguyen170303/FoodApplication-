@@ -17,6 +17,8 @@ import { ICONS, IMAGES } from "@/constants";
 export default function CheckoutScreen() {
   const router = useRouter();
   const {
+    cartItems,
+    currentRestaurant,
     deliveryOptions,
     selectedDelivery,
     setSelectedDelivery,
@@ -53,7 +55,7 @@ export default function CheckoutScreen() {
 
         <View className="flex-1">
           <Text numberOfLines={1} className="text-base font-bold text-dark-100 font-quicksand-bold">
-            {address.storeName}
+            {currentRestaurant.name || address.storeName}
           </Text>
           <Text numberOfLines={1} className="text-xs text-gray-400 font-quicksand">
             Khoảng cách tới chỗ bạn: {address.distance}
@@ -66,7 +68,7 @@ export default function CheckoutScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 140 }}
       >
-        {/* Delivery Address Section (Images 1 & 2) */}
+        {/* Delivery Address Section */}
         <View className="bg-white p-4 mb-3 border-b border-gray-100">
           <View className="flex-row items-start justify-between">
             <View className="flex-row items-start flex-1 mr-2">
@@ -101,7 +103,7 @@ export default function CheckoutScreen() {
           </View>
         </View>
 
-        {/* Delivery Options Selector (Images 1 & 2) */}
+        {/* Delivery Options Selector */}
         <View className="bg-white p-4 mb-3 border-b border-gray-100">
           <View className="flex-row items-center mb-3">
             <Text className="text-base font-bold text-dark-100 font-quicksand-bold">
@@ -119,39 +121,74 @@ export default function CheckoutScreen() {
           ))}
         </View>
 
-        {/* Order Summary Section (Image 1) */}
+        {/* Order Summary Section */}
         <View className="bg-white p-4 mb-3 border-b border-gray-100">
           <View className="flex-row items-center justify-between mb-3">
             <Text className="text-base font-bold text-dark-100 font-quicksand-bold">
-              Tóm tắt đơn hàng
+              Tóm tắt đơn hàng ({currentRestaurant.name})
             </Text>
             <TouchableOpacity onPress={() => router.back()}>
               <Text className="text-sm font-bold text-sky-600 font-quicksand-bold">Thêm món</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Food Item Row */}
-          <View className="flex-row items-center justify-between py-2 border-b border-gray-100">
-            <Image source={IMAGES.burgerTwo} className="w-14 h-14 rounded-xl mr-3" resizeMode="cover" />
-            <View className="flex-1 pr-2">
-              <Text className="text-sm font-bold text-dark-100 font-quicksand-bold">
-                2 Miếng Gà Rán
-              </Text>
-              <Text className="text-xs text-gray-400 font-quicksand">
-                2 Fried Chicken - Gà Giòn Cay
-              </Text>
-              <TouchableOpacity className="mt-1">
-                <Text className="text-xs font-bold text-sky-600 font-quicksand-bold">Chỉnh sửa</Text>
-              </TouchableOpacity>
-            </View>
+          {/* Dynamic Food Items List from CartContext */}
+          {cartItems.length > 0 ? (
+            cartItems.map((cartItem) => (
+              <View key={cartItem.id} className="flex-row items-center justify-between py-2 border-b border-gray-100">
+                <Image
+                  source={cartItem.menuItem.image || currentRestaurant.logo || IMAGES.burgerTwo}
+                  className="w-14 h-14 rounded-xl mr-3"
+                  resizeMode="cover"
+                />
+                <View className="flex-1 pr-2">
+                  <Text className="text-sm font-bold text-dark-100 font-quicksand-bold">
+                    {cartItem.menuItem.name}
+                  </Text>
+                  <Text className="text-xs text-gray-400 font-quicksand">
+                    {Object.values(cartItem.selectedOptions).length > 0
+                      ? Object.values(cartItem.selectedOptions).map((o) => o.name).join(", ")
+                      : cartItem.menuItem.description || "Món ăn đặt giao"}
+                  </Text>
+                  {cartItem.note ? (
+                    <Text className="text-[11px] text-orange-600 font-quicksand mt-0.5">
+                      ✏️ Ghi chú: {cartItem.note}
+                    </Text>
+                  ) : null}
+                </View>
 
-            <View className="items-end">
-              <Text className="text-sm font-bold text-dark-100 font-quicksand-bold">74.000</Text>
-              <View className="w-6 h-6 rounded-full border border-emerald-500 items-center justify-center mt-1">
-                <Text className="text-xs font-bold text-emerald-600 font-quicksand-bold">1</Text>
+                <View className="items-end">
+                  <Text className="text-sm font-bold text-dark-100 font-quicksand-bold">
+                    {formatVND(cartItem.itemTotal)}
+                  </Text>
+                  <View className="w-6 h-6 rounded-full border border-emerald-500 items-center justify-center mt-1 bg-emerald-50">
+                    <Text className="text-xs font-bold text-emerald-600 font-quicksand-bold">
+                      {cartItem.quantity}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            ))
+          ) : (
+            <View className="flex-row items-center justify-between py-2 border-b border-gray-100">
+              <Image source={IMAGES.burgerTwo} className="w-14 h-14 rounded-xl mr-3" resizeMode="cover" />
+              <View className="flex-1 pr-2">
+                <Text className="text-sm font-bold text-dark-100 font-quicksand-bold">
+                  2 Miếng Gà Rán - Gà Giòn Cay
+                </Text>
+                <Text className="text-xs text-gray-400 font-quicksand">
+                  Combo Gà Rán Giòn Cay
+                </Text>
+              </View>
+
+              <View className="items-end">
+                <Text className="text-sm font-bold text-dark-100 font-quicksand-bold">74.000đ</Text>
+                <View className="w-6 h-6 rounded-full border border-emerald-500 items-center justify-center mt-1">
+                  <Text className="text-xs font-bold text-emerald-600 font-quicksand-bold">1</Text>
+                </View>
               </View>
             </View>
-          </View>
+          )}
 
           {/* Price Breakdown */}
           <View className="pt-3">
@@ -170,7 +207,7 @@ export default function CheckoutScreen() {
           </View>
         </View>
 
-        {/* Payment Method Section (Images 2 & 3) */}
+        {/* Payment Method Section */}
         <View className="bg-white p-4 mb-3 border-b border-gray-100">
           <View className="flex-row items-center justify-between mb-3">
             <Text className="text-base font-bold text-dark-100 font-quicksand-bold">
@@ -192,7 +229,7 @@ export default function CheckoutScreen() {
           </View>
         </View>
 
-        {/* Promotions & Rewards Section (Image 3) */}
+        {/* Promotions & Rewards Section */}
         <View className="bg-white p-4 mb-3 border-b border-gray-100">
           <Text className="text-base font-bold text-dark-100 font-quicksand-bold mb-3">
             Áp dụng ưu đãi và giảm giá
@@ -222,19 +259,6 @@ export default function CheckoutScreen() {
           </View>
         </View>
 
-        {/* Rewards Earned Header (Image 3) */}
-        <View className="bg-white p-4 mb-3 border-b border-gray-100">
-          <Text className="text-base font-bold text-dark-100 font-quicksand-bold mb-2">
-            Nhận sau khi đơn hàng hoàn tất
-          </Text>
-          <View className="flex-row items-center">
-            <Text className="text-base mr-2">🪙</Text>
-            <Text className="text-sm font-bold text-dark-100 font-quicksand-bold">
-              11 GrabXu (≈ 367đ) ⓘ
-            </Text>
-          </View>
-        </View>
-
         {/* Terms Disclaimer */}
         <View className="px-5 py-2">
           <Text className="text-[11px] text-gray-400 font-quicksand text-center leading-4">
@@ -260,7 +284,7 @@ export default function CheckoutScreen() {
               {formatVND(totalPrice)}
             </Text>
             <Text className="text-xs text-gray-400 line-through font-quicksand">
-              91.000đ
+              {formatVND(totalPrice + 12000)}
             </Text>
           </View>
         </View>

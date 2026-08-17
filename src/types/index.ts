@@ -59,6 +59,7 @@ export interface Restaurant {
   voucherBadge?: string;
   minOrder?: string;
 }
+
 export interface FoodOption {
   id: string;
   name: string;
@@ -163,10 +164,56 @@ export interface PaymentMethod {
   isDefault?: boolean;
 }
 
+export type UserRole = "CUSTOMER" | "SHIPPER";
+
 export interface AuthUser {
   id: string;
   name: string;
   email: string;
+  role?: UserRole;
   avatar?: any;
 }
 
+// ----------------------------------------------------
+// SHIPPER SPECIFIC TYPES
+// ----------------------------------------------------
+export type ShipperOrderStatus =
+  | "AVAILABLE"
+  | "ACCEPTED"
+  | "PICKED_UP"
+  | "DELIVERING"
+  | "COMPLETED";
+
+export interface ShipperOrder {
+  id: string;
+  orderCode: string;
+  storeName: string;
+  storeAddress: string;
+  storePhone: string;
+  customerName: string;
+  customerPhone: string;
+  deliveryAddress: string;
+  distanceText: string;
+  itemsSummary: string;
+  totalFoodPrice: number;
+  shippingEarnings: number; // Tiền công giao đơn của Shipper
+  status: ShipperOrderStatus;
+  statusText: string;
+  createdAt: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  orderId: string;
+  senderRole: "CUSTOMER" | "SHIPPER";
+  senderName: string;
+  text: string;
+  timestamp: string;
+}
+
+export interface ShipperStats {
+  todayEarnings: number;
+  completedCount: number;
+  rating: number;
+  acceptanceRate: string;
+}

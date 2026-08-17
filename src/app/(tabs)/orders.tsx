@@ -1,12 +1,51 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import { useOrders } from "@/hooks/useOrders";
 import { ActiveOrderCard } from "@/components/ActiveOrderCard";
 import { OrderHistoryCard } from "@/components/OrderHistoryCard";
+import { socketService } from "@/services/socketService";
+import { Order } from "@/types";
 
 export default function OrdersScreen() {
-  const { activeOrder, orderHistory, loading, refreshOrders } = useOrders();
+  const { activeOrder: initialActiveOrder, orderHistory, loading, refreshOrders } = useOrders();
+  const [liveActiveOrder, setLiveActiveOrder] = useState<Order | null>(initialActiveOrder);
+
+  useEffect(() => {
+    setLiveActiveOrder(initialActiveOrder);
+  }, [initialActiveOrder]);
+
+  // Connect WebSocket for Real-time Status Sync from Shipper
+  useEffect(() => {
+    if (liveActiveOrder?.id) {
+      socketService.joinRoom(liveActiveOrder.id);
+
+      socketService.onOrderStatusChanged((data) => {
+        console.log("⚡ Real-time Order Status Update received:", data);
+
+        // Show compact sleek Toast Notification
+        Toast.show({
+          type: "info",
+          text1: "🛵 Cập nhật đơn hàng mới!",
+          text2: data.statusText || "Tài xế vừa cập nhật trạng thái đơn hàng.",
+          position: "top",
+          visibilityTime: 4000,
+        });
+
+        // Update live order state
+        setLiveActiveOrder((prev) => {
+          if (!prev) return null;
+          return {
+            ...prev,
+            currentStepIndex: data.stepIndex !== undefined ? data.stepIndex : prev.currentStepIndex,
+            statusText: data.statusText || prev.statusText,
+            status: data.status === "COMPLETED" ? "COMPLETED" : prev.status,
+          };
+        });
+      });
+    }
+  }, [liveActiveOrder?.id]);
 
   return (
     <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={["top", "left", "right"]}>
@@ -28,7 +67,7 @@ export default function OrdersScreen() {
         }
       >
         {/* Active Order Progress Tracking Section */}
-        {activeOrder && (
+        {liveActiveOrder && (
           <View className="mb-6">
             <View className="flex-row items-center justify-between mb-3">
               <Text className="text-lg font-bold text-dark-100 font-quicksand-bold">
@@ -36,12 +75,12 @@ export default function OrdersScreen() {
               </Text>
               <View className="bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
                 <Text className="text-xs font-bold text-emerald-700 font-quicksand-bold">
-                  Đang diễn ra
+                  LIVE TRACKING 🔴
                 </Text>
               </View>
             </View>
 
-            <ActiveOrderCard order={activeOrder} />
+            <ActiveOrderCard order={liveActiveOrder} />
           </View>
         )}
 

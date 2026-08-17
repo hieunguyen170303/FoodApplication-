@@ -89,10 +89,11 @@ export const createLiveOrder = (
   storeLogo: any,
   items: { name: string; quantity: number; price: number }[],
   estimatedTime: string,
-  totalPrice: number
+  totalPrice: number,
+  customOrderId?: string
 ): Order => {
   const newOrder: Order = {
-    id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
+    id: customOrderId || `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
     storeName: storeName || "KFC - Tòa Nhà Sora Gardens SC",
     storeLogo: storeLogo || IMAGES.burgerTwo,
     status: "DELIVERING",

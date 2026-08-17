@@ -8,35 +8,60 @@ import {
   ScrollView,
   Modal,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/hooks/useAuth";
 import { IMAGES } from "@/constants";
+import { shipperService } from "@/services/shipperService";
 
 export default function AuthScreen() {
   const router = useRouter();
   const { login, register } = useAuth();
 
+  const [role, setRole] = useState<"CUSTOMER" | "SHIPPER">("CUSTOMER");
   const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
   const [fullName, setFullName] = useState<string>("Adrian Hajdin");
   const [email, setEmail] = useState<string>("adrian@gmail.com");
-  const [password, setPassword] = useState<string>("••••••••••••");
+  const [password, setPassword] = useState<string>("123456");
   const [loading, setLoading] = useState<boolean>(false);
   const [successModalVisible, setSuccessModalVisible] = useState<boolean>(false);
+
+  const handleRoleChange = (selectedRole: "CUSTOMER" | "SHIPPER") => {
+    setRole(selectedRole);
+    if (selectedRole === "SHIPPER") {
+      setEmail("shipper");
+      setPassword("123");
+      setActiveTab("login");
+    } else {
+      setEmail("adrian@gmail.com");
+      setPassword("123456");
+    }
+  };
 
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      if (activeTab === "login") {
-        await login(email, password);
-        setSuccessModalVisible(true);
+      if (role === "SHIPPER") {
+        await shipperService.loginShipper(email, password);
+        Alert.alert("Thành công 🎉", "Đăng nhập tài khoản Shipper thành công!", [
+          {
+            text: "Đến trang Tài xế",
+            onPress: () => router.replace("/shipper" as any),
+          },
+        ]);
       } else {
-        const res = await register(fullName, email, password);
-        // Redirect to OTP Verification screen
-        router.push(`/verify-otp?email=${encodeURIComponent(email)}` as any);
+        if (activeTab === "login") {
+          await login(email, password);
+          setSuccessModalVisible(true);
+        } else {
+          await register(fullName, email, password);
+          router.push(`/verify-otp?email=${encodeURIComponent(email)}` as any);
+        }
       }
     } catch (err: any) {
       console.error("Auth error:", err);
+      Alert.alert("Lỗi đăng nhập", err.message || "Không thể thực hiện yêu cầu!");
     } finally {
       setLoading(false);
     }
@@ -69,54 +94,110 @@ export default function AuthScreen() {
           </View>
         </ImageBackground>
 
-        {/* White Rounded Card Form Container (Images 1 & 2) */}
+        {/* White Rounded Card Form Container */}
         <View className="flex-1 bg-white -mt-6 rounded-t-3xl px-6 pt-6 pb-10">
-          {/* Tab Switcher (Log In vs Sign Up) */}
-          <View className="flex-row bg-gray-100 p-1 rounded-2xl mb-6">
+          {/* Role Selection (Khách hàng vs Shipper) */}
+          <View className="mb-4 bg-orange-50 p-1.5 rounded-2xl border border-orange-100 flex-row">
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => setActiveTab("login")}
+              onPress={() => handleRoleChange("CUSTOMER")}
               style={{
                 flex: 1,
-                paddingVertical: 12,
+                paddingVertical: 10,
                 borderRadius: 12,
                 alignItems: "center",
                 justifyContent: "center",
-                backgroundColor: activeTab === "login" ? "#FFFFFF" : "transparent",
-                elevation: activeTab === "login" ? 2 : 0,
+                backgroundColor: role === "CUSTOMER" ? "#FE8C00" : "transparent",
               }}
             >
               <Text
-                className={`text-sm font-bold font-quicksand-bold ${
-                  activeTab === "login" ? "text-primary" : "text-gray-400"
+                className={`text-xs font-bold font-quicksand-bold ${
+                  role === "CUSTOMER" ? "text-white" : "text-gray-500"
                 }`}
               >
-                Log In
+                👤 Khách hàng
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => setActiveTab("signup")}
+              onPress={() => handleRoleChange("SHIPPER")}
               style={{
                 flex: 1,
-                paddingVertical: 12,
+                paddingVertical: 10,
                 borderRadius: 12,
                 alignItems: "center",
                 justifyContent: "center",
-                backgroundColor: activeTab === "signup" ? "#FFFFFF" : "transparent",
-                elevation: activeTab === "signup" ? 2 : 0,
+                backgroundColor: role === "SHIPPER" ? "#181C2E" : "transparent",
               }}
             >
               <Text
-                className={`text-sm font-bold font-quicksand-bold ${
-                  activeTab === "signup" ? "text-primary" : "text-gray-400"
+                className={`text-xs font-bold font-quicksand-bold ${
+                  role === "SHIPPER" ? "text-white" : "text-gray-500"
                 }`}
               >
-                Sign Up
+                🛵 Tài xế / Shipper
               </Text>
             </TouchableOpacity>
           </View>
+
+          {/* Helper hint for Shipper login */}
+          {role === "SHIPPER" && (
+            <View className="bg-slate-100 p-2.5 rounded-xl mb-4 border border-slate-200">
+              <Text className="text-xs text-slate-600 font-quicksand text-center">
+                🔑 Tài khoản shipper dùng thử: <Text className="font-bold font-quicksand-bold text-dark-100">shipper</Text> | Mật khẩu: <Text className="font-bold font-quicksand-bold text-dark-100">123</Text>
+              </Text>
+            </View>
+          )}
+
+          {/* Tab Switcher (Log In vs Sign Up) */}
+          {role === "CUSTOMER" && (
+            <View className="flex-row bg-gray-100 p-1 rounded-2xl mb-6">
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => setActiveTab("login")}
+                style={{
+                  flex: 1,
+                  paddingVertical: 12,
+                  borderRadius: 12,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: activeTab === "login" ? "#FFFFFF" : "transparent",
+                  elevation: activeTab === "login" ? 2 : 0,
+                }}
+              >
+                <Text
+                  className={`text-sm font-bold font-quicksand-bold ${
+                    activeTab === "login" ? "text-primary" : "text-gray-400"
+                  }`}
+                >
+                  Log In
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => setActiveTab("signup")}
+                style={{
+                  flex: 1,
+                  paddingVertical: 12,
+                  borderRadius: 12,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: activeTab === "signup" ? "#FFFFFF" : "transparent",
+                  elevation: activeTab === "signup" ? 2 : 0,
+                }}
+              >
+                <Text
+                  className={`text-sm font-bold font-quicksand-bold ${
+                    activeTab === "signup" ? "text-primary" : "text-gray-400"
+                  }`}
+                >
+                  Sign Up
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
           {/* Form Fields */}
           <View className="space-y-4">
