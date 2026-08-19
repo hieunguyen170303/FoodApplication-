@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
+import Toast from "react-native-toast-message";
 import "./globals.css";
 
 SplashScreen.preventAutoHideAsync();
@@ -42,21 +44,32 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <PaperProvider
-        theme={theme}
-        settings={{
-          icon: (props) => <MaterialCommunityIcons {...props} />,
-        }}
-      >
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="auth" />
-          <Stack.Screen name="verify-otp" />
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="restaurant/[id]" />
-          <Stack.Screen name="checkout" />
-        </Stack>
-      </PaperProvider>
+      <CartProvider>
+        <PaperProvider
+          theme={theme}
+          settings={{
+            icon: (props) => <MaterialCommunityIcons {...props} />,
+          }}
+        >
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="auth" />
+            <Stack.Screen name="verify-otp" />
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="restaurant/[id]" />
+            <Stack.Screen name="checkout" />
+            <Stack.Screen name="notifications" />
+            <Stack.Screen name="vouchers" />
+            <Stack.Screen name="favorites" />
+            <Stack.Screen name="addresses" />
+            <Stack.Screen name="payment-methods" />
+            <Stack.Screen name="shipper" />
+            <Stack.Screen name="chat/[orderId]" />
+            <Stack.Screen name="review/[orderId]" />
+          </Stack>
+          <Toast />
+        </PaperProvider>
+      </CartProvider>
     </AuthProvider>
   );
 }

@@ -14,8 +14,7 @@ import { CategoryChips } from "@/components/CategoryChips";
 import { FoodGridCard } from "@/components/FoodGridCard";
 import { RestaurantCard } from "@/components/RestaurantCard";
 import { ICONS } from "@/constants";
-
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -44,7 +43,7 @@ export default function SearchScreen() {
     <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={["top", "left", "right"]}>
       {/* Top Header */}
       <View className="px-5 pt-3 pb-3 flex-row items-center justify-between">
-        {viewMode === "results" ? (
+        {viewMode === "results" || query.length > 0 ? (
           /* Back Button when viewing search results */
           <TouchableOpacity
             activeOpacity={0.7}
@@ -59,7 +58,7 @@ export default function SearchScreen() {
             />
           </TouchableOpacity>
         ) : (
-          /* Default Header Title (Image 1) */
+          /* Default Header Title */
           <View>
             <Text className="text-[11px] font-bold tracking-wider text-primary uppercase font-quicksand-bold">
               SEARCH
@@ -82,6 +81,7 @@ export default function SearchScreen() {
         <View className="relative">
           <TouchableOpacity
             activeOpacity={0.8}
+            onPress={() => router.push("/cart" as any)}
             className="w-11 h-11 bg-dark-100 rounded-full items-center justify-center shadow-sm"
           >
             <Image
@@ -137,7 +137,7 @@ export default function SearchScreen() {
           }}
         />
       ) : (
-        /* Image 2 Paper Filter Chips */
+        /* Paper Filter Chips */
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -169,22 +169,30 @@ export default function SearchScreen() {
       {/* Main Content Scroll View */}
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 120, paddingHorizontal: 20 }}
+        contentContainerStyle={{ paddingBottom: 160, paddingHorizontal: 20 }}
       >
         {viewMode === "categories" ? (
-          /* View Mode 1: 2-Column Food Grid (Image 1) */
-          <View className="flex-row flex-wrap justify-between">
-            {foods.map((food) => (
-              <FoodGridCard
-                key={food.id}
-                item={food}
-                onPress={() => Alert.alert("Food Details", food.name)}
-                onAddToCart={() => handleAddToCart(food.name)}
-              />
-            ))}
-          </View>
+          /* View Mode 1: 2-Column Food Grid */
+          foods.length > 0 ? (
+            <View className="flex-row flex-wrap justify-between">
+              {foods.map((food) => (
+                <FoodGridCard
+                  key={food.id}
+                  item={food}
+                  onPress={() => handleSelectRestaurant(food.restaurantId || "r1")}
+                  onAddToCart={() => handleAddToCart(food.name)}
+                />
+              ))}
+            </View>
+          ) : (
+            <View className="items-center justify-center py-12">
+              <Text className="text-gray-400 font-quicksand text-sm">
+                Không tìm thấy món ăn phù hợp với danh mục {selectedCategory}
+              </Text>
+            </View>
+          )
         ) : (
-          /* View Mode 2: Store / Restaurant List (Image 2) */
+          /* View Mode 2: Store / Restaurant List */
           <View>
             <View className="flex-row items-center justify-between mb-3">
               <Text className="text-sm font-bold text-gray-500 font-quicksand-bold">
@@ -211,7 +219,7 @@ export default function SearchScreen() {
 
             <TouchableOpacity className="py-3 items-center">
               <Text className="text-sm text-gray-400 font-bold font-quicksand-bold">
-                Xem tất cả {restaurants.length * 3} quán
+                Xem tất cả {restaurants.length} quán
               </Text>
             </TouchableOpacity>
           </View>

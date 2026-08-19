@@ -30,7 +30,7 @@ export default function VerifyOtpScreen() {
     setLoading(true);
     try {
       await verifyOtp(email || "user@gmail.com", otpToken);
-      Alert.alert("Thành công 🎉", "Xác minh tài khoản thành công!", [
+      Alert.alert("Thành công", "Xác minh tài khoản thành công!", [
         {
           text: "Vào ứng dụng",
           onPress: () => router.replace("/(tabs)" as any),
@@ -61,7 +61,12 @@ export default function VerifyOtpScreen() {
       {/* Header Illustration & Info */}
       <View className="items-center mb-8">
         <View className="w-20 h-20 rounded-full bg-orange-50 items-center justify-center mb-4 border border-orange-100">
-          <Text className="text-4xl">✉️</Text>
+          <Image
+            source={ICONS.envelope}
+            className="w-8 h-8"
+            style={{ tintColor: "#FE8C00" }}
+            resizeMode="contain"
+          />
         </View>
 
         <Text className="text-2xl font-extrabold text-dark-100 font-quicksand-bold mb-2 text-center">

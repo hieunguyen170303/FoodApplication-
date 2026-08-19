@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
+import Toast from "react-native-toast-message";
+import { useCart } from "@/context/CartContext";
+import { apiClient } from "@/services/apiClient";
 import {
   getDeliveryOptions,
   getPaymentMethods,
@@ -11,6 +14,7 @@ import { IMAGES } from "@/constants";
 
 export function useCheckout() {
   const router = useRouter();
+  const { cartItems, currentRestaurant, cartSubtotal, clearCart } = useCart();
 
   const [deliveryOptions, setDeliveryOptions] = useState<DeliveryOption[]>([]);
   const [selectedDelivery, setSelectedDelivery] = useState<DeliveryOption | null>(null);
@@ -18,8 +22,8 @@ export function useCheckout() {
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Mock checkout item values matching Images 1, 2, 3
-  const itemSubtotal = 74000;
+  // Dynamic values calculated from CartContext
+  const itemSubtotal = cartSubtotal > 0 ? cartSubtotal : 74000;
   const discountAmount = 12000;
 
   useEffect(() => {
@@ -30,9 +34,9 @@ export function useCheckout() {
           getPaymentMethods(),
         ]);
         setDeliveryOptions(delOpts);
-        setSelectedDelivery(delOpts[0]); // Default: Ưu tiên ⚡
+        setSelectedDelivery(delOpts[0]);
         setPaymentMethods(payMethods);
-        setSelectedPayment(payMethods[0]); // Default: MoMo
+        setSelectedPayment(payMethods[0]);
       } catch (err) {
         console.error("Error loading checkout data:", err);
       } finally {
@@ -46,36 +50,94 @@ export function useCheckout() {
   const deliveryFee = selectedDelivery ? selectedDelivery.price : 10000;
   const totalPrice = Math.max(0, itemSubtotal + deliveryFee - discountAmount);
 
-  const placeOrder = () => {
+  const placeOrder = async () => {
     const estTime = selectedDelivery ? selectedDelivery.timeText : "19 phút";
+    const storeName = currentRestaurant?.name || "Jollibee - EC Nguyễn Du";
+    const storeLogo = currentRestaurant?.logo || IMAGES.logo;
 
-    // 1. Create live tracking order in orderService
+    const formattedItems = cartItems.length > 0
+      ? cartItems.map((c) => {
+          const selectedOptsObj = c.selectedOptions || {};
+          const optionsList = Object.values(selectedOptsObj);
+          const optionsText = optionsList.length > 0
+            ? ` (${optionsList.map((o) => o?.name).filter(Boolean).join(", ")})`
+            : "";
+
+          return {
+            name: `${c.quantity}x ${c.menuItem?.name || "Món ăn"}${optionsText}`,
+            quantity: c.quantity || 1,
+            price: c.itemTotal || 0,
+          };
+        })
+      : [
+          {
+            name: "2 Miếng Gà Rán - Gà Giòn Cay",
+            quantity: 1,
+            price: 74000,
+          },
+        ];
+
+    let createdOrderId: string | undefined;
+
+    // 1. Post new order to backend server via REST API so Shipper receives it live!
+    try {
+      const res = await apiClient.post("/orders", {
+        storeName,
+        totalPrice,
+        items: formattedItems,
+        estimatedTime: `${estTime} (Tài xế đang giao)`,
+        deliveryAddress: MOCK_DELIVERY_ADDRESS.subtitle,
+      });
+      console.log("Order posted successfully to Backend API:", res);
+      if (res && res.data && res.data.id) {
+        createdOrderId = res.data.id;
+      }
+    } catch (err) {
+      console.warn("Could not post to backend API, falling back to local creation:", err);
+    }
+
+    // 2. Create local live tracking order in orderService with valid IMAGES asset logo
     createLiveOrder(
-      "KFC - Tòa Nhà Sora Gardens SC",
-      IMAGES.burgerTwo,
-      [
-        {
-          name: "2 Miếng Gà Rán - Gà Giòn Cay",
-          quantity: 1,
-          price: 74000,
-        },
-      ],
+      storeName,
+      storeLogo,
+      formattedItems,
       `${estTime} (Tài xế đang giao)`,
-      totalPrice
+      totalPrice,
+      createdOrderId
     );
 
-    // 2. Redirect user to /(tabs)/orders tab
+    // 3. Clear shopping cart
+    clearCart();
+
+    Toast.show({
+      type: "success",
+      text1: "Đặt đơn thành công!",
+      text2: `Đơn hàng tại ${storeName} đang được chuẩn bị.`,
+      position: "top",
+      visibilityTime: 4000,
+    });
+
+    // 4. Redirect user to /(tabs)/orders tab
     router.replace("/(tabs)/orders" as any);
   };
 
   return {
+    cartItems,
+    currentRestaurant: currentRestaurant || {
+      name: "Jollibee - EC Nguyễn Du",
+      branch: "Hùng Vương, Thủ Dầu Một",
+      logo: IMAGES.logo,
+    },
     deliveryOptions,
     selectedDelivery,
     setSelectedDelivery,
     paymentMethods,
     selectedPayment,
     setSelectedPayment,
-    address: MOCK_DELIVERY_ADDRESS,
+    address: {
+      ...MOCK_DELIVERY_ADDRESS,
+      storeName: currentRestaurant?.name || "Jollibee - EC Nguyễn Du",
+    },
     itemSubtotal,
     deliveryFee,
     discountAmount,

@@ -1,6 +1,5 @@
 import React from "react";
-import { View, Text, Image } from "react-native";
-import { Card, Button } from "react-native-paper";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { GridFoodItem } from "@/types";
 
 interface FoodGridCardProps {
@@ -15,54 +14,46 @@ export const FoodGridCard: React.FC<FoodGridCardProps> = ({
   onAddToCart,
 }) => {
   return (
-    <Card
+    <TouchableOpacity
+      activeOpacity={0.85}
       onPress={onPress}
-      elevation={1}
-      className="bg-white rounded-[24px] mb-4 overflow-hidden border border-gray-100/80"
-      style={{
-        width: "48%",
-        backgroundColor: "#FFFFFF",
-      }}
+      className="bg-white/95 p-3.5 rounded-[28px] mb-4 border border-orange-100/80 shadow-md shadow-orange-500/5 items-center relative overflow-hidden"
+      style={{ width: "48%" }}
     >
-      <Card.Content className="items-center p-3">
-        {/* Floating Food Image */}
-        <View className="w-28 h-28 mb-2 items-center justify-center">
-          <Image
-            source={item.image}
-            className="w-full h-full"
-            resizeMode="contain"
-          />
-        </View>
+      {/* Floating Image */}
+      <View className="w-28 h-28 my-1 items-center justify-center relative">
+        <Image
+          source={item.image}
+          className="w-full h-full"
+          resizeMode="contain"
+        />
+      </View>
 
-        {/* Food Details */}
-        <View className="items-center w-full mt-1">
-          <Text
-            numberOfLines={1}
-            className="text-base font-bold text-dark-100 font-quicksand-bold text-center"
-          >
-            {item.name}
-          </Text>
-          <Text className="text-xs text-gray-400 font-quicksand text-center mt-1">
-            {item.startingPriceText}
-          </Text>
+      {/* Title */}
+      <Text
+        numberOfLines={1}
+        className="text-sm font-extrabold text-[#181C2E] font-quicksand-bold text-center mt-1"
+      >
+        {item.name}
+      </Text>
 
-          {/* Add to Cart Button with Paper Button */}
-          <Button
-            mode="text"
-            compact
-            onPress={onAddToCart}
-            textColor="#FE8C00"
-            labelStyle={{
-              fontFamily: "Quicksand-Bold",
-              fontWeight: "700",
-              fontSize: 13,
-            }}
-            className="mt-2"
-          >
-            + Add to cart
-          </Button>
-        </View>
-      </Card.Content>
-    </Card>
+      {/* Price Pill */}
+      <View className="bg-orange-50/80 border border-orange-200/80 px-3 py-1 rounded-full mt-1.5 mb-2.5">
+        <Text className="text-xs font-extrabold text-primary font-quicksand-bold text-center">
+          {item.startingPriceText}
+        </Text>
+      </View>
+
+      {/* Floating (+) Add to Cart Pill Button */}
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={onAddToCart}
+        className="w-full bg-primary py-2.5 rounded-full items-center justify-center shadow-md shadow-orange-500/25 flex-row space-x-1"
+      >
+        <Text className="text-white text-xs font-extrabold font-quicksand-bold">
+          + Thêm vào giỏ
+        </Text>
+      </TouchableOpacity>
+    </TouchableOpacity>
   );
 };

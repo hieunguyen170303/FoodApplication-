@@ -1,6 +1,5 @@
 import React from "react";
-import { ScrollView } from "react-native";
-import { Chip } from "react-native-paper";
+import { View, ScrollView, TouchableOpacity, Text } from "react-native";
 
 interface CategoryChipsProps {
   categories: string[];
@@ -14,37 +13,52 @@ export const CategoryChips: React.FC<CategoryChipsProps> = ({
   onSelectCategory,
 }) => {
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      className="mb-4 flex-row px-5"
-      contentContainerStyle={{ paddingRight: 30 }}
-    >
-      {categories.map((cat) => {
-        const isSelected = selectedCategory === cat;
-        return (
-          <Chip
-            key={cat}
-            selected={isSelected}
-            onPress={() => onSelectCategory(cat)}
-            mode={isSelected ? "flat" : "outlined"}
-            className="mr-2"
-            style={{
-              backgroundColor: isSelected ? "#FE8C00" : "#F3F4F6",
-              borderRadius: 24,
-              borderColor: isSelected ? "#FE8C00" : "#E5E7EB",
-            }}
-            textStyle={{
-              color: isSelected ? "#FFFFFF" : "#6B7280",
-              fontWeight: "700",
-              fontFamily: "Quicksand-Bold",
-              fontSize: 13,
-            }}
-          >
-            {cat}
-          </Chip>
-        );
-      })}
-    </ScrollView>
+    <View style={{ height: 54, marginBottom: 8 }}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          alignItems: "center",
+        }}
+        style={{ flex: 1 }}
+      >
+        {categories.map((cat) => {
+          const isSelected = selectedCategory === cat;
+          return (
+            <TouchableOpacity
+              key={cat}
+              activeOpacity={0.8}
+              onPress={() => onSelectCategory(cat)}
+              style={{
+                height: 40,
+                paddingHorizontal: 18,
+                borderRadius: 20,
+                marginRight: 10,
+                backgroundColor: isSelected ? "#FE8C00" : "#FFFFFF",
+                borderWidth: 1,
+                borderColor: isSelected ? "#FE8C00" : "#E5E7EB",
+                justifyContent: "center",
+                alignItems: "center",
+                elevation: isSelected ? 2 : 0,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 13,
+                  lineHeight: 18,
+                  fontWeight: "700",
+                  color: isSelected ? "#FFFFFF" : "#181C2E",
+                  fontFamily: "Quicksand-Bold",
+                  textAlign: "center",
+                }}
+              >
+                {cat}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+    </View>
   );
 };

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocalSearchParams } from "expo-router";
 import {
   getSearchCategories,
   searchFoodsAndStores,
@@ -8,13 +9,26 @@ import { GridFoodItem, Restaurant } from "@/types";
 export type SearchViewMode = "categories" | "results";
 
 export function useSearch() {
-  const [query, setQuery] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [viewMode, setViewMode] = useState<SearchViewMode>("categories");
+  const params = useLocalSearchParams<{ category?: string; q?: string }>();
+  const initialCategory = params.category || "All";
+  const initialQuery = params.q || "";
+
+  const [query, setQuery] = useState<string>(initialQuery);
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
+  const [viewMode, setViewMode] = useState<SearchViewMode>(initialQuery ? "results" : "categories");
   const [categoriesList] = useState<string[]>(getSearchCategories());
   const [foods, setFoods] = useState<GridFoodItem[]>([]);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  // Sync route params when navigating
+  useEffect(() => {
+    if (params.category) setSelectedCategory(params.category);
+    if (params.q) {
+      setQuery(params.q);
+      setViewMode("results");
+    }
+  }, [params.category, params.q]);
 
   useEffect(() => {
     async function fetchData() {
@@ -24,7 +38,6 @@ export function useSearch() {
         setFoods(res.foods);
         setRestaurants(res.restaurants);
 
-        // Auto switch to restaurant list results if user typed a query
         if (query.trim().length > 0) {
           setViewMode("results");
         }
@@ -40,6 +53,7 @@ export function useSearch() {
 
   const clearQuery = () => {
     setQuery("");
+    setSelectedCategory("All");
     setViewMode("categories");
   };
 
