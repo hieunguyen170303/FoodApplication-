@@ -82,7 +82,7 @@ export default function ShipperWalletScreen() {
 
     Toast.show({
       type: "success",
-      text1: `🎉 Rút thành công ${num.toLocaleString("vi-VN")}đ!`,
+      text1: `Rút thành công ${num.toLocaleString("vi-VN")}đ!`,
       text2: "Tiền đã được chuyển vào tài khoản Vietcombank.",
       position: "top",
       visibilityTime: 4000,
@@ -92,7 +92,7 @@ export default function ShipperWalletScreen() {
   const formatVND = (num: number) => `${num.toLocaleString("vi-VN")}đ`;
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 px-4 pt-2" edges={["top", "left", "right"]}>
+    <SafeAreaView className="flex-1 bg-[#FDFBF7] px-4 pt-2" edges={["top", "left", "right"]}>
       {/* Header Bar */}
       <View className="flex-row items-center justify-between py-3 mb-2">
         <TouchableOpacity
@@ -108,23 +108,26 @@ export default function ShipperWalletScreen() {
         </TouchableOpacity>
 
         <View className="flex-1">
-          <Text className="text-xs font-semibold text-gray-400 font-quicksand uppercase">
+          <Text className="text-xs font-bold text-gray-400 font-quicksand uppercase tracking-wider">
             KÊNH TÀI XẾ
           </Text>
-          <Text className="text-xl font-extrabold text-dark-100 font-quicksand-bold">
-            Ví thu nhập Shipper 💰
+          <Text className="text-xl font-extrabold text-[#181C2E] font-quicksand-bold">
+            Ví thu nhập Shipper
           </Text>
         </View>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-        {/* Earnings Overview Card */}
-        <View className="bg-gradient-to-r bg-emerald-600 p-5 rounded-3xl mb-5 shadow-lg shadow-emerald-500/30">
+        {/* Earnings Overview Glass Card */}
+        <View
+          className="p-5 rounded-[28px] mb-5 shadow-xl shadow-emerald-500/25 border border-white/20"
+          style={{ backgroundColor: "#059669" }}
+        >
           <View className="flex-row justify-between items-center mb-2">
-            <Text className="text-xs font-bold text-emerald-100 font-quicksand-bold uppercase">
+            <Text className="text-xs font-bold text-emerald-100 font-quicksand-bold uppercase tracking-wider">
               SỐ DƯ VÍ KHẢ DỤNG
             </Text>
-            <View className="bg-white/20 px-2.5 py-0.5 rounded-full">
+            <View className="bg-white/20 px-3 py-1 rounded-full border border-white/30">
               <Text className="text-[10px] font-bold text-white font-quicksand-bold">
                 Tài xế Nguyễn Văn Hùng
               </Text>
@@ -149,20 +152,28 @@ export default function ShipperWalletScreen() {
               <Text className="text-[11px] text-emerald-100 font-quicksand">
                 Đánh giá dịch vụ:
               </Text>
-              <Text className="text-sm font-extrabold text-white font-quicksand-bold">
-                ⭐ 4.9 (98% Hoàn thành)
-              </Text>
+              <View className="flex-row items-center">
+                <Image
+                  source={ICONS.star}
+                  className="w-3.5 h-3.5 mr-1"
+                  style={{ tintColor: "#FFFFFF" }}
+                  resizeMode="contain"
+                />
+                <Text className="text-sm font-extrabold text-white font-quicksand-bold">
+                  4.9 (98% Hoàn thành)
+                </Text>
+              </View>
             </View>
           </View>
         </View>
 
         {/* Withdrawal Section */}
-        <View className="bg-white p-5 rounded-3xl mb-5 border border-gray-200 shadow-sm">
-          <Text className="text-base font-extrabold text-dark-100 font-quicksand-bold mb-1">
-            🏦 Rút tiền về Ngân hàng
+        <View className="bg-white/95 p-5 rounded-[28px] mb-5 border border-orange-100/80 shadow-md shadow-orange-500/5">
+          <Text className="text-base font-extrabold text-[#181C2E] font-quicksand-bold mb-1">
+            Rút tiền về Ngân hàng
           </Text>
           <Text className="text-xs text-gray-400 font-quicksand mb-3">
-            Tài khoản nhận: <Text className="font-bold text-dark-100">Vietcombank - STK 99998888</Text>
+            Tài khoản nhận: <Text className="font-bold text-[#181C2E]">Vietcombank - STK 99998888</Text>
           </Text>
 
           <View className="flex-row items-center mb-3">
@@ -172,13 +183,13 @@ export default function ShipperWalletScreen() {
               keyboardType="numeric"
               placeholder="Nhập số tiền muốn rút..."
               placeholderTextColor="#9CA3AF"
-              className="flex-1 bg-gray-100 px-4 py-3 rounded-2xl text-sm font-bold text-dark-100 border border-gray-200 mr-2"
+              className="flex-1 bg-gray-50/80 px-4 py-3 rounded-2xl text-sm font-bold text-[#181C2E] border border-gray-200/80 mr-2"
             />
             <TouchableOpacity
               onPress={() => setWithdrawAmountInput(walletBalance.toString())}
-              className="bg-gray-100 px-3 py-3 rounded-2xl border border-gray-200"
+              className="bg-orange-50 px-3.5 py-3 rounded-2xl border border-orange-200"
             >
-              <Text className="text-xs font-bold text-primary font-quicksand-bold">
+              <Text className="text-xs font-extrabold text-primary font-quicksand-bold">
                 Rút hết
               </Text>
             </TouchableOpacity>
@@ -187,17 +198,17 @@ export default function ShipperWalletScreen() {
           <TouchableOpacity
             onPress={handleWithdraw}
             activeOpacity={0.9}
-            className="bg-emerald-600 py-3.5 rounded-2xl items-center justify-center shadow-md shadow-emerald-500/20"
+            className="bg-emerald-600 py-3.5 rounded-full items-center justify-center shadow-md shadow-emerald-500/25"
           >
             <Text className="text-white text-sm font-extrabold font-quicksand-bold">
-              ⚡ XÁC NHẬN RÚT TIỀN NGAY
+              XÁC NHẬN RÚT TIỀN NGAY
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Transaction History Log */}
-        <Text className="text-base font-extrabold text-dark-100 font-quicksand-bold mb-3">
-          📜 Lịch sử biến động số dư
+        <Text className="text-base font-extrabold text-[#181C2E] font-quicksand-bold mb-3 px-1">
+          Lịch sử biến động số dư
         </Text>
 
         {historyLogs.map((log) => {
@@ -205,21 +216,24 @@ export default function ShipperWalletScreen() {
           return (
             <View
               key={log.id}
-              className="bg-white p-4 rounded-2xl mb-3 border border-gray-100 flex-row justify-between items-center shadow-xs"
+              className="bg-white/95 p-4 rounded-[24px] mb-3 border border-gray-100 flex-row justify-between items-center shadow-xs"
             >
               <View className="flex-row items-center flex-1 mr-2">
                 <View
-                  className={`w-9 h-9 rounded-xl items-center justify-center mr-3 ${
-                    isPositive ? "bg-emerald-100" : "bg-red-100"
+                  className={`w-10 h-10 rounded-2xl items-center justify-center mr-3 border ${
+                    isPositive ? "bg-emerald-50 border-emerald-200" : "bg-red-50 border-red-200"
                   }`}
                 >
-                  <Text className="text-sm">
-                    {log.type === "WITHDRAW" ? "🏦" : log.type === "TIP" ? "🎁" : "🛵"}
-                  </Text>
+                  <Image
+                    source={isPositive ? ICONS.dollar : ICONS.arrowRight}
+                    className="w-4 h-4"
+                    style={{ tintColor: isPositive ? "#047857" : "#EF4444" }}
+                    resizeMode="contain"
+                  />
                 </View>
 
                 <View className="flex-1">
-                  <Text className="text-xs font-extrabold text-dark-100 font-quicksand-bold" numberOfLines={1}>
+                  <Text className="text-xs font-extrabold text-[#181C2E] font-quicksand-bold" numberOfLines={1}>
                     {log.title}
                   </Text>
                   <Text className="text-[10px] text-gray-400 font-quicksand mt-0.5">

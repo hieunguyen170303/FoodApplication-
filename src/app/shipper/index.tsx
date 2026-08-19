@@ -22,10 +22,10 @@ export default function ShipperDashboardScreen() {
   // Listen for real-time WebSocket new customer order push
   useEffect(() => {
     const unsubscribe = socketService.onNewAvailableOrder((newOrder) => {
-      console.log("⚡ Shipper received real-time new order event:", newOrder.orderCode);
+      console.log("Shipper received real-time new order event:", newOrder.orderCode);
       Toast.show({
         type: "info",
-        text1: "🔥 CÓ ĐƠN HÀNG MỚI!",
+        text1: "CÓ ĐƠN HÀNG MỚI!",
         text2: `Đơn hàng #${newOrder.orderCode} tại ${newOrder.storeName} vừa được khách đặt.`,
         position: "top",
         visibilityTime: 4500,
@@ -40,7 +40,7 @@ export default function ShipperDashboardScreen() {
     if (activeOrder !== null) {
       Toast.show({
         type: "error",
-        text1: "🔒 Đang có 1 đơn hàng chưa hoàn thành!",
+        text1: "Đang có 1 đơn hàng chưa hoàn thành!",
         text2: "Vui lòng giao xong đơn hiện tại trước khi nhận đơn mới.",
         position: "top",
         visibilityTime: 4000,
@@ -54,7 +54,7 @@ export default function ShipperDashboardScreen() {
 
       Toast.show({
         type: "success",
-        text1: "⚡ Đã nhận đơn thành công!",
+        text1: "Đã nhận đơn thành công!",
         text2: `Bạn đã nhận đơn hàng #${orderId}. Hãy di chuyển đến quán nhé!`,
         position: "top",
         visibilityTime: 3500,
@@ -90,7 +90,7 @@ export default function ShipperDashboardScreen() {
 
       Toast.show({
         type: "success",
-        text1: newStatus === "COMPLETED" ? "🎉 Đã hoàn thành đơn hàng!" : "✅ Cập nhật thành công!",
+        text1: newStatus === "COMPLETED" ? "Đã hoàn thành đơn hàng!" : "Cập nhật thành công!",
         text2: newStatus === "COMPLETED" ? "Đã mở khóa nhận đơn mới!" : statusText,
         position: "top",
         visibilityTime: 3500,
@@ -105,31 +105,32 @@ export default function ShipperDashboardScreen() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50 px-4 pt-2" edges={["top", "left", "right"]}>
+    <SafeAreaView className="flex-1 bg-[#FDFBF7] px-4 pt-2" edges={["top", "left", "right"]}>
       {/* Shipper Top Header Bar */}
       <View className="flex-row justify-between items-center mb-4 pt-2">
         <View>
-          <Text className="text-xs font-semibold text-gray-400 font-quicksand">
+          <Text className="text-[11px] font-bold text-gray-400 font-quicksand uppercase tracking-wider">
             KÊNH DÀNH CHO TÀI XẾ
           </Text>
-          <Text className="text-xl font-extrabold text-dark-100 font-quicksand-bold">
-            Nguyễn Văn Hùng 👋
+          <Text className="text-xl font-extrabold text-[#181C2E] font-quicksand-bold">
+            Nguyễn Văn Hùng
           </Text>
         </View>
 
         {/* Online Status Pill */}
-        <View className="bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full flex-row items-center space-x-1">
-          <View className="w-2 h-2 rounded-full bg-emerald-500 mr-1" />
+        <View className="bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full flex-row items-center">
+          <View className="w-2 h-2 rounded-full bg-emerald-500 mr-1.5" />
           <Text className="text-xs font-extrabold text-emerald-700 font-quicksand-bold">
-            ONLINE 🟢
+            ONLINE
           </Text>
         </View>
       </View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 110 }}
         refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={refreshData} colors={["#FE8C00"]} />
+          <RefreshControl refreshing={loading} onRefresh={refreshData} colors={["#FE8C00"]} tintColor="#FE8C00" />
         }
       >
         {/* Earnings & Performance Banner */}
@@ -139,11 +140,11 @@ export default function ShipperDashboardScreen() {
         {activeOrder ? (
           <View className="mb-6">
             <View className="flex-row items-center justify-between mb-3">
-              <Text className="text-base font-extrabold text-dark-100 font-quicksand-bold">
-                🚨 ĐƠN HÀNG ĐANG GIAO (1/1)
+              <Text className="text-base font-extrabold text-[#181C2E] font-quicksand-bold">
+                ĐƠN HÀNG ĐANG GIAO (1/1)
               </Text>
               <Text className="text-xs font-bold text-primary font-quicksand-bold">
-                Đang xử lý ⚡
+                Đang xử lý
               </Text>
             </View>
 
@@ -154,13 +155,15 @@ export default function ShipperDashboardScreen() {
             />
           </View>
         ) : (
-          <View className="bg-emerald-50 p-3 rounded-2xl border border-emerald-200 mb-5 flex-row items-center">
-            <Text className="text-xl mr-2.5">✅</Text>
+          <View className="bg-emerald-50/80 p-4 rounded-[24px] border border-emerald-200/80 mb-5 flex-row items-center shadow-xs">
+            <View className="w-8 h-8 rounded-full bg-emerald-100 items-center justify-center mr-3 border border-emerald-200">
+              <View className="w-3 h-3 rounded-full bg-emerald-600" />
+            </View>
             <View className="flex-1">
-              <Text className="text-xs font-bold text-emerald-800 font-quicksand-bold">
+              <Text className="text-xs font-extrabold text-emerald-900 font-quicksand-bold">
                 SẴN SÀNG NHẬN ĐƠN MỚI
               </Text>
-              <Text className="text-[11px] text-emerald-600 font-quicksand">
+              <Text className="text-[11px] text-emerald-700 font-quicksand mt-0.5">
                 Bạn chưa có đơn hàng nào đang giao. Hãy chọn 1 đơn hàng bên dưới để bắt đầu!
               </Text>
             </View>
@@ -169,13 +172,15 @@ export default function ShipperDashboardScreen() {
 
         {/* Lock Banner if Shipper holds active order */}
         {activeOrder && (
-          <View className="bg-amber-50 p-3 rounded-2xl border border-amber-200 mb-5 flex-row items-center">
-            <Text className="text-xl mr-2.5">🔒</Text>
+          <View className="bg-amber-50/80 p-4 rounded-[24px] border border-amber-200/80 mb-5 flex-row items-center shadow-xs">
+            <View className="w-8 h-8 rounded-full bg-amber-100 items-center justify-center mr-3 border border-amber-200">
+              <View className="w-3 h-3 rounded-full bg-amber-600" />
+            </View>
             <View className="flex-1">
-              <Text className="text-xs font-bold text-amber-800 font-quicksand-bold">
+              <Text className="text-xs font-extrabold text-amber-900 font-quicksand-bold">
                 ĐANG GIAO ĐƠN #{activeOrder.orderCode}
               </Text>
-              <Text className="text-[11px] text-amber-700 font-quicksand">
+              <Text className="text-[11px] text-amber-800 font-quicksand mt-0.5">
                 Quy định: Mỗi tài xế chỉ giao 1 đơn hàng tại một thời điểm. Hoàn thành đơn để mở khóa!
               </Text>
             </View>
@@ -185,8 +190,8 @@ export default function ShipperDashboardScreen() {
         {/* SECTION 2: Available Orders Feed */}
         <View className="mb-8">
           <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-base font-extrabold text-dark-100 font-quicksand-bold">
-              ⚡ ĐƠN HÀNG CHỜ NHẬN ({availableOrders.length})
+            <Text className="text-base font-extrabold text-[#181C2E] font-quicksand-bold">
+              ĐƠN HÀNG CHỜ NHẬN ({availableOrders.length})
             </Text>
             <Text className="text-xs text-gray-400 font-quicksand">
               Ưu tiên đơn mới
@@ -194,9 +199,8 @@ export default function ShipperDashboardScreen() {
           </View>
 
           {availableOrders.length === 0 ? (
-            <View className="bg-white p-8 rounded-2xl border border-gray-100 items-center justify-center">
-              <Text className="text-3xl mb-2">🛵</Text>
-              <Text className="text-sm font-extrabold text-dark-100 font-quicksand-bold mb-1">
+            <View className="bg-white/90 p-8 rounded-[28px] border border-gray-100 items-center justify-center shadow-xs">
+              <Text className="text-sm font-extrabold text-[#181C2E] font-quicksand-bold mb-1">
                 Chưa có đơn hàng mới
               </Text>
               <Text className="text-xs text-gray-400 font-quicksand text-center">

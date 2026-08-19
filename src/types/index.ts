@@ -41,6 +41,7 @@ export interface GridFoodItem {
   startingPriceText: string;
   category: string;
   image: any;
+  restaurantId?: string;
 }
 
 export interface Restaurant {

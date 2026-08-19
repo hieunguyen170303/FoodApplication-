@@ -3,7 +3,7 @@ import {
   ScrollView,
   View,
   Text,
-  TextInput,
+  Image,
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,23 +12,28 @@ import { Header } from "@/components/Header";
 import { BannerCard } from "@/components/BannerCard";
 import { CategoryCard, CategoryCardData } from "@/components/CategoryCard";
 import { CategoryChips } from "@/components/CategoryChips";
-import { CATEGORIES } from "@/constants";
+import { CATEGORIES, ICONS } from "@/constants";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState<string>("Tất cả");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
 
-  const categoryNames = ["Tất cả", "Burgers", "Pizza", "Gà Rán", "Trà Sữa", "Cơm", "Mỳ Ý"];
+  const categoryNames = ["All", "Burgers", "Pizza", "Burrito", "Drinks", "Desserts"];
 
   const quickFeatures = [
-    { label: "🚀 Hỏa tốc 15P", route: "/search" },
-    { label: "🎟️ Kho Voucher", route: "/vouchers" },
-    { label: "❤️ Yêu thích", route: "/favorites" },
-    { label: "💳 Ví FoodApp", route: "/payment-methods" },
+    { label: "Giao hỏa tốc 15P", route: "/(tabs)/search" },
+    { label: "Kho Voucher", route: "/vouchers" },
+    { label: "Món yêu thích", route: "/favorites" },
+    { label: "Ví FoodApp Pay", route: "/payment-methods" },
   ];
 
+  const handleCategoryClick = (categoryName: string) => {
+    setSelectedCategory(categoryName);
+    router.push(`/(tabs)/search?category=${encodeURIComponent(categoryName)}` as any);
+  };
+
   return (
-    <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={["top", "left", "right"]}>
+    <SafeAreaView className="flex-1 bg-[#FDFBF7]" edges={["top", "left", "right"]}>
       {/* Top Header */}
       <Header />
 
@@ -36,23 +41,28 @@ export default function HomeScreen() {
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 110, paddingTop: 4 }}
+        contentContainerStyle={{ paddingBottom: 150, paddingTop: 4 }}
       >
-        {/* Gen-Z Search Input Bar */}
+        {/* Glassmorphism Search Input Bar */}
         <View className="px-5 mb-4 flex-row items-center">
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => router.push("/(tabs)/search" as any)}
-            className="flex-1 bg-white border border-gray-200/90 rounded-full px-4 py-3 flex-row items-center shadow-sm"
+            className="flex-1 bg-white/95 border border-orange-500/20 rounded-full px-4 py-3 flex-row items-center shadow-md shadow-orange-500/10"
           >
-            <Text className="text-base mr-2">🔍</Text>
+            <Image
+              source={ICONS.search}
+              className="w-4 h-4 mr-2.5"
+              style={{ tintColor: "#FE8C00" }}
+              resizeMode="contain"
+            />
             <Text className="text-sm font-medium font-quicksand text-gray-400 flex-1">
               Thèm món gì hôm nay? (Burger, Pizza, Trà sữa...)
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Quick Gen-Z Action Chips */}
+        {/* Quick Action Chips */}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -64,7 +74,7 @@ export default function HomeScreen() {
               key={idx}
               activeOpacity={0.8}
               onPress={() => router.push(feat.route as any)}
-              className="bg-white border border-orange-200/70 px-3.5 py-2 rounded-full mr-2.5 shadow-xs flex-row items-center"
+              className="bg-white/90 border border-orange-200/80 px-4 py-2 rounded-full mr-2.5 shadow-xs flex-row items-center"
             >
               <Text className="text-xs font-extrabold text-primary font-quicksand-bold">
                 {feat.label}
@@ -80,13 +90,13 @@ export default function HomeScreen() {
         <CategoryChips
           categories={categoryNames}
           selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
+          onSelectCategory={handleCategoryClick}
         />
 
         {/* Main Categories Section */}
         <View className="px-5 mb-2">
-          <Text className="text-lg font-extrabold text-dark-100 font-quicksand-bold mb-1">
-            🔥 Khám Phá Món Ngon Hợp Gu
+          <Text className="text-lg font-extrabold text-[#181C2E] font-quicksand-bold mb-0.5">
+            Khám Phá Món Ngon Hợp Gu
           </Text>
           <Text className="text-xs text-gray-400 font-quicksand">
             Giao siêu tốc • Đảm bảo nóng hổi
@@ -98,7 +108,7 @@ export default function HomeScreen() {
           <CategoryCard
             key={category.id}
             item={category}
-            onPress={() => router.push("/(tabs)/search" as any)}
+            onPress={() => handleCategoryClick(category.title)}
           />
         ))}
       </ScrollView>

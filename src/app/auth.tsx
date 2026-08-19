@@ -44,7 +44,7 @@ export default function AuthScreen() {
     try {
       if (role === "SHIPPER") {
         await shipperService.loginShipper(email, password);
-        Alert.alert("Thành công 🎉", "Đăng nhập tài khoản Shipper thành công!", [
+        Alert.alert("Thành công", "Đăng nhập tài khoản Shipper thành công!", [
           {
             text: "Đến trang Tài xế",
             onPress: () => router.replace("/shipper" as any),
@@ -115,7 +115,7 @@ export default function AuthScreen() {
                   role === "CUSTOMER" ? "text-white" : "text-gray-500"
                 }`}
               >
-                👤 Khách hàng
+                Khách hàng
               </Text>
             </TouchableOpacity>
 
@@ -136,7 +136,7 @@ export default function AuthScreen() {
                   role === "SHIPPER" ? "text-white" : "text-gray-500"
                 }`}
               >
-                🛵 Tài xế / Shipper
+                Tài xế / Shipper
               </Text>
             </TouchableOpacity>
           </View>
@@ -145,7 +145,7 @@ export default function AuthScreen() {
           {role === "SHIPPER" && (
             <View className="bg-slate-100 p-2.5 rounded-xl mb-4 border border-slate-200">
               <Text className="text-xs text-slate-600 font-quicksand text-center">
-                🔑 Tài khoản shipper dùng thử: <Text className="font-bold font-quicksand-bold text-dark-100">shipper</Text> | Mật khẩu: <Text className="font-bold font-quicksand-bold text-dark-100">123</Text>
+                Tài khoản shipper dùng thử: <Text className="font-bold font-quicksand-bold text-dark-100">shipper</Text> | Mật khẩu: <Text className="font-bold font-quicksand-bold text-dark-100">123</Text>
               </Text>
             </View>
           )}
@@ -201,7 +201,7 @@ export default function AuthScreen() {
 
           {/* Form Fields */}
           <View className="space-y-4">
-            {/* Full Name field (Only shown in Sign Up tab - Image 1) */}
+            {/* Full Name field (Only shown in Sign Up tab) */}
             {activeTab === "signup" && (
               <View className="mb-4">
                 <Text className="text-xs font-semibold text-gray-400 font-quicksand mb-1">
@@ -290,7 +290,7 @@ export default function AuthScreen() {
         </View>
       </ScrollView>
 
-      {/* Login / Sign Up Success Modal (Image 3) */}
+      {/* Login / Sign Up Success Modal */}
       <Modal
         visible={successModalVisible}
         transparent

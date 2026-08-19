@@ -15,9 +15,9 @@ export const FoodGridCard: React.FC<FoodGridCardProps> = ({
 }) => {
   return (
     <TouchableOpacity
-      activeOpacity={0.9}
+      activeOpacity={0.85}
       onPress={onPress}
-      className="bg-white p-3.5 rounded-[28px] mb-4 border border-gray-100 shadow-md shadow-orange-500/5 items-center relative overflow-hidden"
+      className="bg-white/95 p-3.5 rounded-[28px] mb-4 border border-orange-100/80 shadow-md shadow-orange-500/5 items-center relative overflow-hidden"
       style={{ width: "48%" }}
     >
       {/* Floating Image */}
@@ -32,13 +32,13 @@ export const FoodGridCard: React.FC<FoodGridCardProps> = ({
       {/* Title */}
       <Text
         numberOfLines={1}
-        className="text-sm font-extrabold text-dark-100 font-quicksand-bold text-center mt-1"
+        className="text-sm font-extrabold text-[#181C2E] font-quicksand-bold text-center mt-1"
       >
         {item.name}
       </Text>
 
       {/* Price Pill */}
-      <View className="bg-orange-50/80 border border-orange-200 px-3 py-1 rounded-full mt-1.5 mb-2">
+      <View className="bg-orange-50/80 border border-orange-200/80 px-3 py-1 rounded-full mt-1.5 mb-2.5">
         <Text className="text-xs font-extrabold text-primary font-quicksand-bold text-center">
           {item.startingPriceText}
         </Text>
@@ -48,7 +48,7 @@ export const FoodGridCard: React.FC<FoodGridCardProps> = ({
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={onAddToCart}
-        className="w-full bg-primary py-2 rounded-full items-center justify-center shadow-sm shadow-orange-500/30 flex-row space-x-1"
+        className="w-full bg-primary py-2.5 rounded-full items-center justify-center shadow-md shadow-orange-500/25 flex-row space-x-1"
       >
         <Text className="text-white text-xs font-extrabold font-quicksand-bold">
           + Thêm vào giỏ

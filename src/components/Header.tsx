@@ -24,7 +24,12 @@ export const Header: React.FC<HeaderProps> = ({
         onPress={onLocationPress || (() => router.push("/addresses" as any))}
         className="flex-row items-center bg-orange-50/80 px-3.5 py-2 rounded-full border border-orange-200 shadow-xs"
       >
-        <Text className="text-base mr-1.5">📍</Text>
+        <Image
+          source={ICONS.location}
+          className="w-4 h-4 mr-1.5"
+          style={{ tintColor: "#FE8C00" }}
+          resizeMode="contain"
+        />
         <View>
           <Text className="text-[10px] font-extrabold text-primary uppercase font-quicksand-bold tracking-wider">
             GIAO ĐẾN
@@ -43,13 +48,18 @@ export const Header: React.FC<HeaderProps> = ({
         </View>
       </TouchableOpacity>
 
-      {/* Notification Bell Button */}
+      {/* Notification Button */}
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={() => router.push("/notifications" as any)}
         className="w-10 h-10 rounded-full bg-white border border-gray-200 items-center justify-center shadow-sm relative"
       >
-        <Text className="text-lg">🔔</Text>
+        <Image
+          source={ICONS.envelope}
+          className="w-4 h-4"
+          style={{ tintColor: "#FE8C00" }}
+          resizeMode="contain"
+        />
         <View className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-primary border-2 border-white" />
       </TouchableOpacity>
     </View>

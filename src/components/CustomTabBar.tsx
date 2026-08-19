@@ -60,7 +60,7 @@ export const CustomTabBar: React.FC<any> = ({
               testID={options.tabBarTestID}
               onPress={onPress}
               activeOpacity={0.8}
-              className={`flex-row items-center justify-center py-2 px-3.5 rounded-full transition-all ${
+              className={`flex-row items-center justify-center py-2 px-3.5 rounded-full ${
                 isFocused ? "bg-orange-50 border border-orange-200" : "bg-transparent"
               }`}
             >

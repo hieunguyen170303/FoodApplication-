@@ -35,7 +35,7 @@ export default function CustomerChatScreen() {
       socketService.joinRoom(activeOrderId);
 
       const unsubscribe = socketService.onChatMessageReceived((msg) => {
-        console.log("💬 Shipper received WebSocket Chat Message:", msg);
+        console.log("Shipper received WebSocket Chat Message:", msg);
 
         // Deduplicate to prevent duplicate keys
         setMessages((prev) => {
@@ -46,7 +46,7 @@ export default function CustomerChatScreen() {
         if (msg.senderRole === "CUSTOMER") {
           Toast.show({
             type: "info",
-            text1: `💬 Tin nhắn từ ${msg.senderName}`,
+            text1: `Tin nhắn từ ${msg.senderName}`,
             text2: msg.text,
             position: "top",
             visibilityTime: 3500,
@@ -76,18 +76,18 @@ export default function CustomerChatScreen() {
   };
 
   const quickReplies = [
-    "Tôi đang di chuyển đến ạ! 🛵",
+    "Tôi đang di chuyển đến ạ!",
     "Quán đang làm món, khoảng 5 phút nữa em tới!",
-    "Đến nơi em sẽ gọi anh/chị nhé! 📞",
+    "Đến nơi em sẽ gọi anh/chị nhé!",
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50" edges={["top", "left", "right"]}>
+    <SafeAreaView className="flex-1 bg-[#FDFBF7]" edges={["top", "left", "right"]}>
       {/* Header Bar */}
-      <View className="flex-row items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
+      <View className="flex-row items-center justify-between px-4 py-3 bg-white/95 border-b border-orange-100">
         <TouchableOpacity
           onPress={() => router.back()}
-          className="w-9 h-9 rounded-full bg-gray-100 items-center justify-center mr-3"
+          className="w-9 h-9 rounded-full bg-orange-50 border border-orange-200 items-center justify-center mr-3"
         >
           <Image
             source={ICONS.arrowBack}
@@ -98,17 +98,26 @@ export default function CustomerChatScreen() {
         </TouchableOpacity>
 
         <View className="flex-1">
-          <Text className="text-sm font-extrabold text-dark-100 font-quicksand-bold">
+          <Text className="text-sm font-extrabold text-[#181C2E] font-quicksand-bold">
             Phạm Hoàng Nam (Khách hàng)
           </Text>
-          <Text className="text-xs text-emerald-600 font-quicksand">
-            🟢 WebSocket Active • Đơn #{activeOrderId}
-          </Text>
+          <View className="flex-row items-center mt-0.5">
+            <View className="w-2 h-2 rounded-full bg-emerald-500 mr-1.5" />
+            <Text className="text-xs text-emerald-700 font-quicksand font-semibold">
+              WebSocket Active • Đơn #{activeOrderId}
+            </Text>
+          </View>
         </View>
 
-        <TouchableOpacity className="bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200">
+        <TouchableOpacity className="bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-200 flex-row items-center">
+          <Image
+            source={ICONS.phone}
+            className="w-3.5 h-3.5 mr-1"
+            style={{ tintColor: "#047857" }}
+            resizeMode="contain"
+          />
           <Text className="text-xs font-bold text-emerald-700 font-quicksand-bold">
-            📞 Gọi
+            Gọi
           </Text>
         </TouchableOpacity>
       </View>
@@ -129,8 +138,8 @@ export default function CustomerChatScreen() {
                 <View
                   className={`max-w-[78%] px-4 py-2.5 rounded-2xl ${
                     isShipper
-                      ? "bg-primary rounded-tr-none"
-                      : "bg-white border border-gray-200 rounded-tl-none"
+                      ? "bg-primary rounded-tr-none shadow-xs"
+                      : "bg-white border border-gray-200/80 rounded-tl-none shadow-xs"
                   }`}
                 >
                   <Text
@@ -143,7 +152,7 @@ export default function CustomerChatScreen() {
 
                   <Text
                     className={`text-sm font-medium leading-5 ${
-                      isShipper ? "text-white font-quicksand-bold" : "text-dark-100 font-quicksand"
+                      isShipper ? "text-white font-quicksand-bold" : "text-[#181C2E] font-quicksand"
                     }`}
                   >
                     {item.text}
@@ -163,13 +172,13 @@ export default function CustomerChatScreen() {
         </ScrollView>
 
         {/* Quick Suggest Chips Bar */}
-        <View className="px-4 py-2 bg-white/80 border-t border-gray-100 flex-row">
+        <View className="px-4 py-2 bg-white/90 border-t border-orange-100 flex-row">
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {quickReplies.map((chip, idx) => (
               <TouchableOpacity
                 key={idx}
                 onPress={() => handleSendMessage(chip)}
-                className="bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-full mr-2"
+                className="bg-orange-50 border border-orange-200 px-3.5 py-1.5 rounded-full mr-2"
               >
                 <Text className="text-xs text-primary font-bold font-quicksand-bold">
                   {chip}
@@ -186,14 +195,19 @@ export default function CustomerChatScreen() {
             onChangeText={setInputText}
             placeholder="Nhập tin nhắn cho khách hàng..."
             placeholderTextColor="#9CA3AF"
-            className="flex-1 bg-gray-100 px-4 py-2.5 rounded-full text-sm font-medium font-quicksand text-dark-100 mr-2"
+            className="flex-1 bg-gray-100/80 px-4 py-2.5 rounded-full text-sm font-medium font-quicksand text-[#181C2E] mr-2"
           />
 
           <TouchableOpacity
             onPress={() => handleSendMessage()}
             className="w-10 h-10 rounded-full bg-primary items-center justify-center shadow-md shadow-orange-500/30"
           >
-            <Text className="text-white text-base">➔</Text>
+            <Image
+              source={ICONS.arrowRight}
+              className="w-4 h-4"
+              style={{ tintColor: "#FFFFFF" }}
+              resizeMode="contain"
+            />
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

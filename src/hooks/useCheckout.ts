@@ -34,9 +34,9 @@ export function useCheckout() {
           getPaymentMethods(),
         ]);
         setDeliveryOptions(delOpts);
-        setSelectedDelivery(delOpts[0]); // Default: Ưu tiên ⚡
+        setSelectedDelivery(delOpts[0]);
         setPaymentMethods(payMethods);
-        setSelectedPayment(payMethods[0]); // Default: MoMo
+        setSelectedPayment(payMethods[0]);
       } catch (err) {
         console.error("Error loading checkout data:", err);
       } finally {
@@ -56,15 +56,19 @@ export function useCheckout() {
     const storeLogo = currentRestaurant?.logo || IMAGES.logo;
 
     const formattedItems = cartItems.length > 0
-      ? cartItems.map((c) => ({
-          name: `${c.quantity}x ${c.menuItem.name}${
-            Object.values(c.selectedOptions).length > 0
-              ? ` (${Object.values(c.selectedOptions).map((o) => o.name).join(", ")})`
-              : ""
-          }`,
-          quantity: c.quantity,
-          price: c.itemTotal,
-        }))
+      ? cartItems.map((c) => {
+          const selectedOptsObj = c.selectedOptions || {};
+          const optionsList = Object.values(selectedOptsObj);
+          const optionsText = optionsList.length > 0
+            ? ` (${optionsList.map((o) => o?.name).filter(Boolean).join(", ")})`
+            : "";
+
+          return {
+            name: `${c.quantity}x ${c.menuItem?.name || "Món ăn"}${optionsText}`,
+            quantity: c.quantity || 1,
+            price: c.itemTotal || 0,
+          };
+        })
       : [
           {
             name: "2 Miếng Gà Rán - Gà Giòn Cay",
@@ -84,7 +88,7 @@ export function useCheckout() {
         estimatedTime: `${estTime} (Tài xế đang giao)`,
         deliveryAddress: MOCK_DELIVERY_ADDRESS.subtitle,
       });
-      console.log("✅ Order posted successfully to Backend API:", res);
+      console.log("Order posted successfully to Backend API:", res);
       if (res && res.data && res.data.id) {
         createdOrderId = res.data.id;
       }
@@ -92,7 +96,7 @@ export function useCheckout() {
       console.warn("Could not post to backend API, falling back to local creation:", err);
     }
 
-    // 2. Create local live tracking order in orderService with EXACT same order.id
+    // 2. Create local live tracking order in orderService with valid IMAGES asset logo
     createLiveOrder(
       storeName,
       storeLogo,
@@ -107,7 +111,7 @@ export function useCheckout() {
 
     Toast.show({
       type: "success",
-      text1: "🎉 Đặt đơn thành công!",
+      text1: "Đặt đơn thành công!",
       text2: `Đơn hàng tại ${storeName} đang được chuẩn bị.`,
       position: "top",
       visibilityTime: 4000,

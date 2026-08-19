@@ -145,26 +145,31 @@ export const shipperService = {
 
   // Update order status via REST API (ACCEPTED -> PICKED_UP -> DELIVERING -> COMPLETED)
   async updateOrderStatus(orderId: string, newStatus: ShipperOrder["status"]): Promise<ShipperOrder> {
+    // Save local snapshot BEFORE API call in case REST fails or returns null
+    const localSnapshot: ShipperOrder | null = mockActiveOrder ? { ...mockActiveOrder } : null;
+
     try {
       const res = await apiClient.put(`/shipper/orders/${orderId}/status`, { status: newStatus });
       if (newStatus === "COMPLETED") {
         mockActiveOrder = null;
+        // res.order may be null from backend - fallback to local snapshot
+        return res.order || localSnapshot || ({ id: orderId, status: newStatus, shippingEarnings: 25000 } as any);
       } else {
         mockActiveOrder = res.order;
+        return res.order;
       }
-      return res.order;
     } catch (err: any) {
       console.warn("REST update status error, fallback to local:", err.message);
-      if (!mockActiveOrder || mockActiveOrder.id !== orderId) {
+      if (!localSnapshot) {
         throw new Error("Không tìm thấy đơn hàng đang giao!");
       }
-      mockActiveOrder.status = newStatus;
+      localSnapshot.status = newStatus;
       if (newStatus === "COMPLETED") {
-        const completedOrder = mockActiveOrder;
         mockActiveOrder = null;
-        return completedOrder;
+        return localSnapshot;
       }
-      return mockActiveOrder;
+      mockActiveOrder = localSnapshot;
+      return localSnapshot;
     }
   },
 

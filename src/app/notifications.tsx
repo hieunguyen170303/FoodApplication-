@@ -28,7 +28,7 @@ export default function NotificationsScreen() {
     {
       id: "n1",
       type: "ORDER",
-      title: "🛵 Tài xế đang trên đường giao hàng!",
+      title: "Tài xế đang trên đường giao hàng!",
       message: "Tài xế Nguyễn Văn Hùng đã lấy món tại Jollibee và đang giao tới bạn.",
       timestamp: "5 phút trước",
       isUnread: true,
@@ -37,7 +37,7 @@ export default function NotificationsScreen() {
     {
       id: "n2",
       type: "PROMO",
-      title: "🎁 Voucher Freeship 0đ vừa cập bến!",
+      title: "Voucher Freeship 0đ vừa cập bến!",
       message: "Giảm ngay 25.000đ phí giao hàng cho đơn từ 99k. Sử dụng ngay trước 23:59!",
       timestamp: "1 giờ trước",
       isUnread: true,
@@ -45,7 +45,7 @@ export default function NotificationsScreen() {
     {
       id: "n3",
       type: "ORDER",
-      title: "✅ Đã giao hàng thành công",
+      title: "Đã giao hàng thành công",
       message: "Đơn hàng #FOOD-9540 đã được hoàn tất. Đừng quên đánh giá trải nghiệm nhé!",
       timestamp: "Hôm nay, 12:45",
       isUnread: false,
@@ -54,7 +54,7 @@ export default function NotificationsScreen() {
     {
       id: "n4",
       type: "SYSTEM",
-      title: "🔒 Bảo mật tài khoản",
+      title: "Bảo mật tài khoản",
       message: "Tài khoản của bạn vừa đăng nhập thành công trên thiết bị Android mới.",
       timestamp: "Hôm qua, 18:30",
       isUnread: false,
@@ -62,7 +62,7 @@ export default function NotificationsScreen() {
     {
       id: "n5",
       type: "PROMO",
-      title: "🔥 Combo Gà Rán Giảm 50%",
+      title: "Combo Gà Rán Giảm 50%",
       message: "Ưu đãi độc quyền hôm nay tại KFC Bình Dương. Đặt ngay!",
       timestamp: "2 ngày trước",
       isUnread: false,
@@ -81,23 +81,23 @@ export default function NotificationsScreen() {
   const getIconForType = (type: NotificationItem["type"]) => {
     switch (type) {
       case "ORDER":
-        return "🛵";
+        return ICONS.clock;
       case "PROMO":
-        return "🎁";
+        return ICONS.star;
       case "SYSTEM":
-        return "🔔";
+        return ICONS.user;
       default:
-        return "📩";
+        return ICONS.envelope;
     }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50" edges={["top", "left", "right"]}>
+    <SafeAreaView className="flex-1 bg-[#FDFBF7]" edges={["top", "left", "right"]}>
       {/* Top Header Bar */}
-      <View className="flex-row items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
+      <View className="flex-row items-center justify-between px-4 py-3 bg-white/95 border-b border-orange-100">
         <TouchableOpacity
           onPress={() => router.back()}
-          className="w-9 h-9 rounded-full bg-gray-100 items-center justify-center mr-3"
+          className="w-9 h-9 rounded-full bg-orange-50 border border-orange-200 items-center justify-center mr-3"
         >
           <Image
             source={ICONS.arrowBack}
@@ -108,7 +108,7 @@ export default function NotificationsScreen() {
         </TouchableOpacity>
 
         <View className="flex-1">
-          <Text className="text-base font-extrabold text-dark-100 font-quicksand-bold">
+          <Text className="text-base font-extrabold text-[#181C2E] font-quicksand-bold">
             Thông báo của bạn
           </Text>
           <Text className="text-xs text-gray-400 font-quicksand">
@@ -124,20 +124,20 @@ export default function NotificationsScreen() {
       </View>
 
       {/* Filter Tabs Header */}
-      <View className="bg-white px-4 py-2 border-b border-gray-100 flex-row">
+      <View className="bg-white/90 px-4 py-2 border-b border-orange-100 flex-row">
         {[
           { key: "ALL", label: "Tất cả" },
-          { key: "ORDER", label: "🛵 Đơn hàng" },
-          { key: "PROMO", label: "🎁 Ưu đãi" },
-          { key: "SYSTEM", label: "🔔 Hệ thống" },
+          { key: "ORDER", label: "Đơn hàng" },
+          { key: "PROMO", label: "Ưu đãi" },
+          { key: "SYSTEM", label: "Hệ thống" },
         ].map((tab) => (
           <TouchableOpacity
             key={tab.key}
             onPress={() => setActiveTab(tab.key as any)}
             className={`px-3.5 py-1.5 rounded-full mr-2 border ${
               activeTab === tab.key
-                ? "bg-primary border-primary"
-                : "bg-gray-100 border-gray-200"
+                ? "bg-primary border-primary shadow-xs shadow-orange-500/30"
+                : "bg-gray-100/80 border-gray-200/80"
             }`}
           >
             <Text
@@ -154,9 +154,8 @@ export default function NotificationsScreen() {
       {/* Notification Cards Scroll List */}
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16 }}>
         {filteredNotifications.length === 0 ? (
-          <View className="bg-white p-8 rounded-3xl items-center justify-center border border-gray-100 my-10">
-            <Text className="text-4xl mb-2">🔕</Text>
-            <Text className="text-base font-bold text-dark-100 font-quicksand-bold mb-1">
+          <View className="bg-white/90 p-8 rounded-[28px] items-center justify-center border border-gray-100 my-10 shadow-xs">
+            <Text className="text-base font-extrabold text-[#181C2E] font-quicksand-bold mb-1">
               Không có thông báo nào
             </Text>
             <Text className="text-xs text-gray-400 font-quicksand text-center">
@@ -175,27 +174,32 @@ export default function NotificationsScreen() {
                   router.push("/vouchers" as any);
                 }
               }}
-              className={`p-4 rounded-2xl mb-3 border ${
+              className={`p-4 rounded-[24px] mb-3 border ${
                 item.isUnread
-                  ? "bg-orange-50/50 border-orange-200 shadow-sm"
-                  : "bg-white border-gray-200"
+                  ? "bg-orange-50/70 border-orange-200 shadow-sm"
+                  : "bg-white/95 border-gray-200/80"
               }`}
             >
               <View className="flex-row items-start">
-                <View className="w-10 h-10 rounded-2xl bg-white border border-gray-200 items-center justify-center mr-3 shadow-xs">
-                  <Text className="text-xl">{getIconForType(item.type)}</Text>
+                <View className="w-10 h-10 rounded-2xl bg-orange-100/80 border border-orange-200 items-center justify-center mr-3">
+                  <Image
+                    source={getIconForType(item.type)}
+                    className="w-5 h-5"
+                    style={{ tintColor: "#FE8C00" }}
+                    resizeMode="contain"
+                  />
                 </View>
 
                 <View className="flex-1">
                   <View className="flex-row justify-between items-center mb-1">
                     <Text
-                      className="text-sm font-extrabold text-dark-100 font-quicksand-bold flex-1 mr-2"
+                      className="text-sm font-extrabold text-[#181C2E] font-quicksand-bold flex-1 mr-2"
                       numberOfLines={1}
                     >
                       {item.title}
                     </Text>
                     {item.isUnread && (
-                      <View className="w-2 h-2 rounded-full bg-primary" />
+                      <View className="w-2.5 h-2.5 rounded-full bg-primary" />
                     )}
                   </View>
 
